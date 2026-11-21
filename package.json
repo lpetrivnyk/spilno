@@ -1,0 +1,12 @@
+{
+  "name": "spilno",
+  "private": true,
+  "description": "Build of the Spilno plugin styles (sass CLI).",
+  "scripts": {
+    "build": "sass --no-source-map --style=expanded assets/src/spilno.scss assets/spilno.css && node tools/tokens.mjs",
+    "build:shell": "sass --no-source-map --style=expanded tests/dev-theme/src/shell.scss tests/dev-theme/shell.css"
+  },
+  "devDependencies": {
+    "sass": "1.102.0"
+  }
+}

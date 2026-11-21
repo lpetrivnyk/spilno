@@ -1,0 +1,27 @@
+// Ported from okl-theme src/scss/components/_arrow-shift.scss (okl feature/pages-p5 6a1cb15):
+// classes ds-* -> spilno-*, theme roles var(--ds-*) unchanged, comments dropped.
+
+@mixin arrow-shift($trigger: '&:hover, &:focus-visible') {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-motion="reduce"]) & {
+      transition: transform 0.2s ease-out;
+
+      #{$trigger} {
+        transform: translateX(var(--ds-space-4));
+      }
+    }
+  }
+}
+
+@mixin arrow-shift-within($container, $target) {
+  @media (prefers-reduced-motion: no-preference) {
+    @at-root html:not([data-motion="reduce"]) #{$target} {
+      transition: transform 0.2s ease-out;
+    }
+
+    @at-root html:not([data-motion="reduce"]) #{$container}:hover #{$target},
+      html:not([data-motion="reduce"]) #{$container}:focus-within #{$target} {
+      transform: translateX(var(--ds-space-4));
+    }
+  }
+}

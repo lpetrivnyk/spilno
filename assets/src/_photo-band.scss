@@ -1,0 +1,88 @@
+// Ported from okl-theme src/scss/components/_photo-band.scss (okl feature/pages-p5 6a1cb15):
+// classes ds-* -> spilno-*, theme roles var(--ds-*) unchanged, comments dropped.
+
+.spilno-photo-band {
+  padding-top:    0;
+  padding-bottom: var(--ds-space-48);
+
+  @media (min-width: 768px) {
+    padding-bottom: var(--ds-space-64);
+  }
+
+  @media (min-width: 1200px) {
+    padding-bottom: var(--ds-space-96);
+  }
+
+  --spilno-photo-band-radius: var(--ds-radius-card);
+
+  &__media {
+    aspect-ratio:  366 / 300;
+    overflow:      hidden;
+    border-radius: var(--spilno-photo-band-radius);
+    animation:     spilno-photo-clip 4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+    @media (min-width: 768px) {
+      aspect-ratio: 794 / 480;
+    }
+
+    @media (min-width: 1200px) {
+      aspect-ratio: 1360 / 600;
+    }
+  }
+
+  &--short &__media {
+    aspect-ratio: 358 / 280;
+
+    @media (min-width: 768px) {
+      aspect-ratio: 786 / 440;
+    }
+
+    @media (min-width: 1200px) {
+      aspect-ratio: 1360 / 524;
+    }
+  }
+
+  &--tall {
+    --spilno-photo-band-radius: var(--ds-radius-media);
+  }
+
+  &--tall &__media {
+    aspect-ratio: 358 / 260;
+
+    @media (min-width: 768px) {
+      aspect-ratio: 786 / 470;
+    }
+
+    @media (min-width: 1200px) {
+      aspect-ratio: 1360 / 800;
+    }
+  }
+
+  &__frame {
+    width:            100%;
+    height:           100%;
+    background-color: var(--ds-bg-placeholder);
+    animation:        spilno-photo-zoom 4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+    img {
+      display:    block;
+      width:      100%;
+      height:     100%;
+      object-fit: cover;
+    }
+  }
+}
+
+@keyframes spilno-photo-clip {
+  from { clip-path: inset(6% 6% round var(--spilno-photo-band-radius)); }
+  to   { clip-path: inset(0 round var(--spilno-photo-band-radius)); }
+}
+
+@keyframes spilno-photo-zoom {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1); }
+}
+
+@media (forced-colors: active) {
+  .spilno-photo-band__media { border: var(--ds-fixed-stroke-1) solid CanvasText; }
+}

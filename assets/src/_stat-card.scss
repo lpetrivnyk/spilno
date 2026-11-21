@@ -1,0 +1,52 @@
+// Ported from okl-theme src/scss/components/_stat-card.scss (okl feature/pages-p5 6a1cb15):
+// classes ds-* -> spilno-*, theme roles var(--ds-*) unchanged, comments dropped.
+
+.spilno-stat-grid {
+  display:               grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap:                   var(--ds-space-16);
+  margin:                0;
+  padding:               0;
+  list-style:            none;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  &__item { display: flex; min-width: 0; }
+}
+
+.spilno-stat-card {
+  display:          flex;
+  flex-direction:   column;
+  gap:              0.375rem;
+  width:            100%;
+  margin:           0;
+  padding:          var(--ds-inset-panel);
+  padding-bottom:   calc(var(--ds-inset-panel) + var(--ds-space-24));
+  border-radius:    var(--ds-radius-primary);
+  background-color: var(--ds-bg-card);
+  font-family:      var(--ds-font-base);
+
+  &__value {
+    font-size:      var(--ds-size-h1);
+    line-height:    1.0833;
+    letter-spacing: -0.025em;
+    color:          var(--ds-text-ink);
+    white-space:    nowrap;
+  }
+
+  &__label {
+    font-size:   var(--ds-size-body-sm);
+    line-height: 1.6;
+    color:       var(--ds-text-muted);
+  }
+}
+
+@media (forced-colors: active) {
+  .spilno-stat-card { border: var(--ds-fixed-stroke-1) solid CanvasText; }
+}

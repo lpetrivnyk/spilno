@@ -1,0 +1,70 @@
+// Spilno — styles of the shared page templates.
+//
+// Classes spilno-* only; colours, sizes and spacing come only from the
+// theme roles var(--ds-*) (the list the theme must provide is
+// assets/spilno.tokens.txt, built from the compiled CSS). The plugin draws
+// from the page head to the last band with its own button, pill, tile,
+// mosaic and cards (a deliberate copy of the theme atoms): the site gives
+// header, breadcrumbs, <main> and footer.
+//
+// The rules of the plugin do not rely on data-line-spacing /
+// data-letter-spacing (plan, debt B2). They honour data-links="underline"
+// and data-motion="reduce" on <html> and the system media queries.
+//
+// Build: npm run build (sass CLI) -> assets/spilno.css, committed.
+
+@use 'band';
+@use 'backdrop';
+@use 'icon';
+@use 'button';
+@use 'pill';
+@use 'link-arrow';
+@use 'page-head';
+@use 'photo-band';
+@use 'section';
+@use 'section-head';
+@use 'card';
+@use 'bento';
+@use 'stat-card';
+@use 'tile';
+
+// The root: box model, surface and family are the plugin's own, so the page
+// does not depend on the theme's base rules (a theme may load none).
+.spilno {
+  position:         relative;
+  isolation:        isolate;
+  margin:           0;
+  background-color: var(--ds-bg-paper);
+  color:            var(--ds-text-ink);
+  font-family:      var(--ds-font-base);
+  -webkit-font-smoothing: antialiased;
+
+  &,
+  & *,
+  & *::before,
+  & *::after {
+    box-sizing: border-box;
+  }
+}
+
+// Less motion: the system setting and the site's switch (data-motion).
+@mixin reduced-motion {
+  .spilno,
+  .spilno *,
+  .spilno *::before,
+  .spilno *::after {
+    animation-duration:        0.01ms !important;
+    animation-delay:           0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration:       0.01ms !important;
+    transition-delay:          0s !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @include reduced-motion;
+}
+
+html[data-motion="reduce"] {
+  @include reduced-motion;
+}

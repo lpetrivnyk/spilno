@@ -1,0 +1,70 @@
+// Ported from okl-theme src/scss/components/_section.scss (okl feature/pages-p5 6a1cb15):
+// classes ds-* -> spilno-*, theme roles var(--ds-*) unchanged, comments dropped.
+
+.spilno-section {
+  --spilno-card-surface:     var(--ds-bg-card);
+  --spilno-card-stroke:      transparent;
+  --spilno-card-ring:        var(--ds-accent-base);
+  --spilno-card-ring-offset: calc(-1 * var(--ds-fixed-stroke-3));
+
+  &--card,
+  &--inverse {
+    --spilno-card-surface: var(--ds-bg-paper);
+  }
+
+  &--inverse {
+    --spilno-card-stroke:      var(--ds-border-on-inverse);
+    --spilno-card-ring:        var(--ds-text-on-inverse);
+    --spilno-card-ring-offset: var(--ds-offset-focus);
+  }
+
+  &--paper   { background-color: var(--ds-bg-paper); }
+  &--card    { background-color: var(--ds-bg-card); }
+
+  &--inverse {
+    background-color: var(--ds-bg-inverse);
+    color:            var(--ds-text-on-inverse);
+  }
+
+  &__wrap {
+    display:        flex;
+    flex-direction: column;
+    gap:            var(--ds-gap-group);
+  }
+
+  &--gap-wide &__wrap {
+    gap: var(--ds-space-64);
+  }
+
+  &--template {
+    padding-block: var(--ds-space-48);
+
+    @media (min-width: 768px) {
+      padding-block: var(--ds-space-64);
+    }
+
+    @media (min-width: 1200px) {
+      padding-block: var(--ds-space-96);
+    }
+  }
+
+  &--gap-template &__wrap {
+    gap: var(--ds-space-32);
+
+    @media (min-width: 768px) {
+      gap: var(--ds-space-48);
+    }
+  }
+}
+
+.spilno-section__group {
+  display:        flex;
+  flex-direction: column;
+  gap:            inherit;
+}
+
+.spilno-section__actions {
+  display:   flex;
+  flex-wrap: wrap;
+  gap:       var(--ds-gap-item);
+}

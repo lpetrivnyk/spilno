@@ -1,0 +1,182 @@
+// Ported from okl-theme src/scss/components/_button.scss (okl feature/pages-p5 6a1cb15):
+// classes ds-* -> spilno-*, theme roles var(--ds-*) unchanged, comments dropped.
+
+@use 'button-mixins' as m;
+
+.spilno-btn {
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+  gap:             var(--ds-gap-control);
+
+  border:          var(--ds-fixed-stroke-1) solid transparent;
+  border-radius:   var(--ds-radius-control);
+
+  font-family:     var(--ds-font-base);
+  font-weight:     600;
+  font-size:       var(--ds-size-body-sm);
+  line-height:     1.0667;
+  letter-spacing:  0;
+  text-align:      center;
+  text-decoration: none;
+
+  cursor:          pointer;
+
+  max-width:       100%;
+
+  &__label {
+    overflow-wrap: anywhere;
+    min-width:     0;
+  }
+
+  &__icon {
+    display:     inline-flex;
+    flex-shrink: 0;
+    svg { display: block; width: 100%; height: 100%; }
+  }
+
+  &--lg {
+    padding: var(--ds-inset-btn-lg-y) var(--ds-inset-btn-lg-x);
+
+    .spilno-btn__icon { width: var(--ds-size-icon-20); height: var(--ds-size-icon-20); }
+  }
+
+  &--md {
+    padding: var(--ds-inset-btn-md-y) var(--ds-inset-btn-md-x);
+
+    .spilno-btn__icon { width: var(--ds-size-icon-20); height: var(--ds-size-icon-20); }
+  }
+
+  &--sm {
+    padding: var(--ds-inset-btn-sm-y) var(--ds-inset-btn-sm-x);
+
+    .spilno-btn__icon { width: var(--ds-size-icon-16); height: var(--ds-size-icon-16); }
+  }
+
+  &:focus-visible {
+    outline:        var(--ds-stroke-focus) solid var(--ds-accent-base);
+    outline-offset: calc(var(--ds-offset-focus) - var(--ds-stroke-focus) / 2);
+  }
+
+  &--primary {
+    @include m.primary;
+
+    &:disabled,
+    &[aria-disabled="true"] {
+      background-color: var(--ds-accent-disabled);
+      border-color:     var(--ds-accent-disabled);
+      color:            var(--ds-accent-on-disabled);
+    }
+  }
+
+  &--secondary {
+    background-color: transparent;
+    border-color:     var(--ds-border-line);
+    color:            var(--ds-accent-base);
+
+    @media (hover: hover) {
+      &:hover:not(:disabled):not([aria-disabled="true"]) {
+        border-color: var(--ds-border-strong);
+      }
+    }
+
+    &:active:not(:disabled):not([aria-disabled="true"]) {
+      background-color: var(--ds-bg-hover);
+      border-color:     var(--ds-border-strong);
+    }
+
+    &:disabled,
+    &[aria-disabled="true"] {
+      border-color: var(--ds-accent-disabled);
+      color:        var(--ds-accent-on-disabled);
+    }
+  }
+
+  &--ghost {
+    background-color: transparent;
+    border-color:     transparent;
+    color:            var(--ds-accent-base);
+
+    @media (hover: hover) {
+      &:hover:not(:disabled):not([aria-disabled="true"]) {
+        background-color: var(--ds-bg-hover);
+        border-color:     var(--ds-bg-hover);
+      }
+    }
+
+    &:active:not(:disabled):not([aria-disabled="true"]) {
+      background-color: var(--ds-bg-placeholder);
+      border-color:     var(--ds-bg-placeholder);
+    }
+
+    &:disabled,
+    &[aria-disabled="true"] {
+      color: var(--ds-accent-on-disabled);
+    }
+  }
+
+  &--inverse {
+    background-color: var(--ds-text-on-inverse);
+    border-color:     var(--ds-text-on-inverse);
+    color:            var(--ds-bg-inverse);
+
+    &.spilno-btn:focus-visible {
+      outline-color: var(--ds-border-on-inverse);
+    }
+
+    &:disabled,
+    &[aria-disabled="true"] {
+      background-color: var(--ds-border-on-inverse-soft);
+      border-color:     var(--ds-border-on-inverse-soft);
+      color:            var(--ds-accent-on-disabled);
+    }
+  }
+
+  &:disabled,
+  &[aria-disabled="true"] {
+    cursor: default;
+  }
+
+  &:disabled {
+    pointer-events: none;
+  }
+}
+
+.spilno-btn[hidden] { display: none; }
+
+:where(.spilno-on-inverse) .spilno-btn--primary {
+  @include m.on-inverse-primary;
+}
+
+@media (forced-colors: active) {
+  .spilno-btn {
+    @include m.forced-rest;
+  }
+
+  @media (hover: hover) {
+    .spilno-btn--primary:hover:not(:disabled):not([aria-disabled="true"]),
+    .spilno-btn--secondary:hover:not(:disabled):not([aria-disabled="true"]),
+    .spilno-btn--ghost:hover:not(:disabled):not([aria-disabled="true"]),
+    .spilno-btn--inverse:hover:not(:disabled):not([aria-disabled="true"]) {
+      @include m.forced-hover;
+    }
+  }
+
+  .spilno-btn--primary:active:not(:disabled):not([aria-disabled="true"]),
+  .spilno-btn--secondary:active:not(:disabled):not([aria-disabled="true"]),
+  .spilno-btn--ghost:active:not(:disabled):not([aria-disabled="true"]),
+  .spilno-btn--inverse:active:not(:disabled):not([aria-disabled="true"]) {
+    @include m.forced-pressed;
+  }
+
+  .spilno-btn:disabled,
+  .spilno-btn[aria-disabled="true"] {
+    border-color: GrayText;
+    color:        GrayText;
+  }
+
+  .spilno-btn.spilno-btn:focus-visible {
+    outline-color:  CanvasText;
+    outline-offset: var(--ds-offset-focus);
+  }
+}

@@ -1,0 +1,13 @@
+// Ported from okl-theme src/scss/components/_band.scss (okl feature/pages-p5 6a1cb15):
+// classes ds-* -> spilno-*, theme roles var(--ds-*) unchanged, comments dropped.
+
+.spilno-band {
+  padding: var(--ds-gap-block) var(--ds-page-gutter) 0;
+
+  &__wrap {
+    width:     100%;
+    max-width: var(--ds-page-wrap);
+    margin:    0 auto;
+  }
+
+}

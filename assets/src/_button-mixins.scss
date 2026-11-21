@@ -1,0 +1,71 @@
+// Ported from okl-theme src/scss/components/_button-mixins.scss (okl feature/pages-p5 6a1cb15):
+// classes ds-* -> spilno-*, theme roles var(--ds-*) unchanged, comments dropped.
+
+@use 'sass:map';
+
+$enabled: ':not(:disabled):not([aria-disabled="true"])';
+
+@mixin hover-query($query: true) {
+  @if $query {
+    @media (hover: hover) { @content; }
+  } @else {
+    @content;
+  }
+}
+
+$_edges: (
+  fill:       (rest: var(--ds-accent-base), hover: var(--ds-accent-hover), pressed: var(--ds-accent-pressed)),
+  on-inverse: (rest: var(--ds-accent-on),   hover: var(--ds-accent-on),    pressed: var(--ds-accent-on)),
+);
+
+@mixin primary($edge: fill, $hover-query: true) {
+  @if not map.has-key($_edges, $edge) {
+    @error "primary(): невідоме $edge `#{$edge}` — очікується fill або on-inverse.";
+  }
+
+  $border: map.get($_edges, $edge);
+
+  background-color: var(--ds-accent-base);
+  border-color:     map.get($border, rest);
+  color:            var(--ds-accent-on);
+
+  @include hover-query($hover-query) {
+    &:hover#{$enabled} {
+      background-color: var(--ds-accent-hover);
+      border-color:     map.get($border, hover);
+    }
+  }
+
+  &:active#{$enabled} {
+    background-color: var(--ds-accent-pressed);
+    border-color:     map.get($border, pressed);
+  }
+}
+
+@mixin on-inverse-primary($hover-query: true) {
+  @include primary($edge: on-inverse, $hover-query: $hover-query);
+
+  &:focus-visible {
+    outline-color: var(--ds-text-on-inverse);
+  }
+}
+
+@mixin forced-rest {
+  background-color: ButtonFace;
+  border-color:     ButtonText;
+  color:            ButtonText;
+}
+
+@mixin forced-hover {
+  background-color:   Highlight;
+  border-color:       Highlight;
+  color:              HighlightText;
+  forced-color-adjust: none;
+}
+
+@mixin forced-pressed {
+  background-color:   Highlight;
+  border-color:       HighlightText;
+  color:              HighlightText;
+  forced-color-adjust: none;
+}

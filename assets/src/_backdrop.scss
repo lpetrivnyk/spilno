@@ -1,0 +1,47 @@
+// Ported from okl-theme src/scss/components/_backdrop.scss (okl feature/pages-p5 6a1cb15):
+// classes ds-* -> spilno-*, theme roles var(--ds-*) unchanged, comments dropped.
+
+.spilno-backdrop-page {
+  position:  relative;
+  isolation: isolate;
+}
+
+.spilno-backdrop {
+  position:       absolute;
+  inset-inline:   0;
+  top:            0;
+  z-index:        -1;
+  height:         52.75rem;
+  pointer-events: none;
+
+  background:
+    linear-gradient(var(--ds-bg-gradient-primary-veil), var(--ds-bg-gradient-primary-veil)),
+    radial-gradient(ellipse 84.6% 29.1% at 90% 1.5%, var(--ds-bg-gradient-primary-mint), var(--ds-bg-gradient-primary-mint-end)),
+    radial-gradient(ellipse 69.2% 25.6% at 4.1% 5.9%, var(--ds-bg-gradient-primary-periwinkle), var(--ds-bg-gradient-primary-periwinkle-end)),
+    radial-gradient(ellipse 76.9% 24.9% at 50% -5.8%, var(--ds-bg-gradient-primary-sky), var(--ds-bg-gradient-primary-sky-end)),
+    linear-gradient(to bottom, var(--ds-bg-gradient-primary-base-top) 0%, var(--ds-bg-gradient-primary-base-mid) 35%, var(--ds-bg-gradient-primary-base-end) 70%);
+
+  @media (min-width: 768px) {
+    height: 56.25rem;
+    background:
+      linear-gradient(var(--ds-bg-gradient-primary-veil), var(--ds-bg-gradient-primary-veil)),
+      radial-gradient(ellipse 52.8% 36.4% at 90% -3.6%, var(--ds-bg-gradient-primary-mint), var(--ds-bg-gradient-primary-mint-end)),
+      radial-gradient(ellipse 43.2% 32% at 4% 1.8%, var(--ds-bg-gradient-primary-periwinkle), var(--ds-bg-gradient-primary-periwinkle-end)),
+      radial-gradient(ellipse 48% 31.1% at 50% -10.7%, var(--ds-bg-gradient-primary-sky), var(--ds-bg-gradient-primary-sky-end)),
+      linear-gradient(to bottom, var(--ds-bg-gradient-primary-base-top) 0%, var(--ds-bg-gradient-primary-base-mid) 35%, var(--ds-bg-gradient-primary-base-end) 70%);
+  }
+
+  @media (min-width: 1200px) {
+    background:
+      linear-gradient(var(--ds-bg-gradient-primary-veil), var(--ds-bg-gradient-primary-veil)),
+      radial-gradient(ellipse 38.2% 45.6% at 90.3% -4.4%, var(--ds-bg-gradient-primary-mint), var(--ds-bg-gradient-primary-mint-end)),
+      radial-gradient(ellipse 31.3% 40% at 4.2% 2.2%, var(--ds-bg-gradient-primary-periwinkle), var(--ds-bg-gradient-primary-periwinkle-end)),
+      radial-gradient(ellipse 34.7% 38.9% at 50% -13.3%, var(--ds-bg-gradient-primary-sky), var(--ds-bg-gradient-primary-sky-end)),
+      linear-gradient(to bottom, var(--ds-bg-gradient-primary-base-top) 0%, var(--ds-bg-gradient-primary-base-mid) 35%, var(--ds-bg-gradient-primary-base-end) 70%);
+  }
+}
+
+@media (forced-colors: active) {
+  .spilno-backdrop { display: none; }
+}
+

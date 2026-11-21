@@ -2,9 +2,8 @@
 /**
  * Diagnostics: what a site must have for the plugin to work.
  *
- * Stage 1 checks the database, the templates, the adapter and the stored
- * pages. Theme tokens (stage 2) and link constants (stage 4) are added with
- * their stages.
+ * The database, the templates, the adapter, the stored pages, the theme
+ * tokens and the link constants.
  *
  * @package Spilno
  */
@@ -117,8 +116,30 @@ function spilno_doctor() {
 		$add( 'info', 'pages', sprintf( '%d page(s) with values', $count ) );
 	}
 
-	// Links (stage 4).
-	$add( 'info', 'links', '' === _spilno_site_id() ? 'links are not configured: pages work locally' : 'site ' . _spilno_site_id() );
+	// Links (plan §E1).
+	$link = _spilno_sync_config();
+
+	if ( ! $link['configured'] ) {
+		$add( 'info', 'links', 'links are not configured: pages work locally' );
+	} elseif ( ! $link['ok'] ) {
+		foreach ( $link['problems'] as $problem ) {
+			$add( 'fail', 'links', $problem );
+		}
+	} else {
+		$add( 'ok', 'links', sprintf( 'site %s, partner %s at %s', $link['site'], $link['peer'], $link['url'] ) );
+
+		if ( $link['ips'] ) {
+			$add( 'ok', 'links', 'partner addresses: ' . implode( ', ', $link['ips'] ) );
+		} elseif ( _spilno_dev_env() ) {
+			$add( 'info', 'links', 'SPILNO_PEER_IPS is empty: any address is accepted (local / development only)' );
+		} else {
+			$add( 'fail', 'links', 'SPILNO_PEER_IPS is empty: the endpoint refuses every request outside local / development' );
+		}
+
+		if ( count( $link['secrets'] ) > 1 ) {
+			$add( 'info', 'links', 'SPILNO_SECRET_PREVIOUS is accepted too (rotation): remove it once the partner signs with the new secret' );
+		}
+	}
 
 	return $out;
 }

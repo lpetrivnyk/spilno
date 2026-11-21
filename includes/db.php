@@ -2,9 +2,10 @@
 /**
  * Own tables of the plugin and their migration.
  *
- * Stage 1 creates only what local pages need: `spilno_pages` (current values
- * of a page, its revision) and `spilno_log` (revisions and events). Links,
- * queue, media and nonces come with synchronisation.
+ * `spilno_pages` (current values of a page, its revision), `spilno_log`
+ * (revisions and events, the endpoint's refusals as record 0) and
+ * `spilno_nonces` (one-time nonces of accepted requests, 1.1.0). Links,
+ * queue and media come with their parts of synchronisation.
  *
  * @package Spilno
  */
@@ -26,14 +27,15 @@ const SPILNO_LOG_KEEP_VALUES = 20;
 /**
  * Table names of the plugin, prefixed.
  *
- * @return array{pages: string, log: string}
+ * @return array{pages: string, log: string, nonces: string}
  */
 function _spilno_tables() {
 	global $wpdb;
 
 	return array(
-		'pages' => $wpdb->prefix . 'spilno_pages',
-		'log'   => $wpdb->prefix . 'spilno_log',
+		'pages'  => $wpdb->prefix . 'spilno_pages',
+		'log'    => $wpdb->prefix . 'spilno_log',
+		'nonces' => $wpdb->prefix . 'spilno_nonces',
 	);
 }
 
@@ -84,6 +86,13 @@ function _spilno_db_schema() {
   created_at datetime NOT NULL,
   PRIMARY KEY  (id),
   KEY record_id (record_id,id)
+) ENGINE=InnoDB {$charset};",
+		"CREATE TABLE {$tables['nonces']} (
+  site varchar(32) NOT NULL,
+  nonce char(32) NOT NULL,
+  req_time bigint(20) NOT NULL,
+  PRIMARY KEY  (site,nonce),
+  KEY req_time (req_time)
 ) ENGINE=InnoDB {$charset};",
 	);
 }

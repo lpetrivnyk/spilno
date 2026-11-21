@@ -29,7 +29,7 @@ define( 'SPILNO_API', 1 );
  * Version of the plugin's own tables. Bumped together with any change of
  * `_spilno_db_schema()`; the migration runs on the first request after that.
  */
-define( 'SPILNO_DB_VERSION', '1.0.0' );
+define( 'SPILNO_DB_VERSION', '1.1.0' );
 
 define( 'SPILNO_FILE', __FILE__ );
 define( 'SPILNO_PATH', plugin_dir_path( __FILE__ ) );
@@ -39,7 +39,9 @@ define( 'SPILNO_PATH', plugin_dir_path( __FILE__ ) );
  *
  * The `spilno_enabled` filter is the site's switch. The data API (schema,
  * parse, save, values, state) keeps working regardless, so admin forms never
- * lose their fields.
+ * lose their fields. Switched off, the synchronisation endpoint answers 404;
+ * it reads the switch on `plugins_loaded:1`, so the filter must be added by a
+ * plugin or a must-use plugin, not by the theme.
  *
  * @return bool
  */
@@ -56,6 +58,9 @@ require SPILNO_PATH . 'includes/adopt.php';
 require SPILNO_PATH . 'includes/slots.php';
 require SPILNO_PATH . 'includes/render.php';
 require SPILNO_PATH . 'includes/doctor.php';
+require SPILNO_PATH . 'includes/sync/config.php';
+require SPILNO_PATH . 'includes/sync/guard.php';
+require SPILNO_PATH . 'includes/sync/endpoint.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require SPILNO_PATH . 'includes/cli.php';
@@ -63,6 +68,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
 add_action( 'plugins_loaded', '_spilno_db_maybe_migrate', 0 );
 add_action( 'init', '_spilno_load_textdomain', 1 );
+add_action( 'admin_notices', '_spilno_sync_notices' );
 register_activation_hook( __FILE__, '_spilno_db_maybe_migrate' );
 
 /**

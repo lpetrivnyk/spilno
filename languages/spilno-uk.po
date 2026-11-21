@@ -1,0 +1,159 @@
+# Copyright (C) 2026 
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Spilno 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"POT-Creation-Date: 2026-11-21T19:19:47+02:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: spilno\n"
+
+#. Plugin Name of the plugin
+#: spilno.php
+msgid "Spilno"
+msgstr "Spilno"
+
+#. Description of the plugin
+#: spilno.php
+msgid "Pages shared between two sites: page templates, their values with revisions, and an adapter contract for the sites."
+msgstr "Сторінки, спільні для двох сайтів: шаблони сторінок, їхні значення з ревізіями й контракт адаптера для сайтів."
+
+#: includes/adopt.php:42
+msgid "Only a site administrator can adopt pages."
+msgstr "Переносити сторінки може лише адміністратор сайту."
+
+#: includes/adopt.php:48
+#: includes/store.php:253
+msgid "The page was not found."
+msgstr "Сторінку не знайдено."
+
+#: includes/adopt.php:54
+msgid "This page already has values of a spilno template."
+msgstr "Ця сторінка вже має значення шаблону spilno."
+
+#: includes/adopt.php:60
+msgid "The site adapter gives no values for this page and template."
+msgstr "Адаптер сайту не дає значень для цієї сторінки й шаблону."
+
+#: includes/adopt.php:64
+msgid "The site adapter returned an invalid adopt map."
+msgstr "Адаптер сайту повернув неправильну мапу перенесення."
+
+#: includes/adopt.php:72
+#: includes/fields.php:320
+msgid "Unknown field."
+msgstr "Невідоме поле."
+
+#: includes/adopt.php:82
+msgid "The page was not adopted: some values do not pass the template rules."
+msgstr "Сторінку не перенесено: деякі значення не проходять правил шаблону."
+
+#: includes/contract.php:60
+msgid "The site adapter returned an unknown error for this URL."
+msgstr "Адаптер сайту повернув невідому помилку для цієї адреси."
+
+#: includes/contract.php:64
+msgid "The site has no adapter for page addresses."
+msgstr "На сайті немає адаптера для адрес сторінок."
+
+#: includes/contract.php:68
+msgid "The site adapter returned an invalid answer for this URL."
+msgstr "Адаптер сайту повернув неправильну відповідь для цієї адреси."
+
+#: includes/fields.php:133
+msgid "The text contains invalid characters."
+msgstr "Текст містить неприпустимі символи."
+
+#: includes/fields.php:139
+msgid "Remove HTML tags and codes like %20 or &amp; — the field accepts plain text only."
+msgstr "Приберіть HTML-теги й коди на кшталт %20 чи &amp; — поле приймає лише текст."
+
+#. translators: %d: maximum number of characters.
+#: includes/fields.php:144
+#, php-format
+msgid "No more than %d character."
+msgid_plural "No more than %d characters."
+msgstr[0] "Не більше %d символу."
+msgstr[1] "Не більше %d символів."
+msgstr[2] "Не більше %d символів."
+
+#: includes/fields.php:164
+#: includes/fields.php:231
+#: includes/fields.php:271
+#: includes/fields.php:381
+msgid "Invalid value."
+msgstr "Неправильне значення."
+
+#: includes/fields.php:189
+msgid "This field is missing from the form. Reload the page and try again."
+msgstr "Цього поля немає у формі. Оновіть сторінку й спробуйте ще раз."
+
+#: includes/fields.php:256
+msgid "Choose an image from the media library."
+msgstr "Оберіть зображення з медіатеки."
+
+#: includes/fields.php:440
+msgid "This field is missing."
+msgstr "Цього поля немає."
+
+#: includes/fields.php:490
+msgid "This field is required."
+msgstr "Це поле обовʼязкове."
+
+#: includes/store.php:209
+msgid "The page cannot be published: fix the fields marked below."
+msgstr "Сторінку не можна опублікувати: виправте поля, позначені нижче."
+
+#: includes/store.php:217
+msgid "The page cannot be published: fill in the required fields."
+msgstr "Сторінку не можна опублікувати: заповніть обовʼязкові поля."
+
+#: includes/store.php:269
+msgid "You are not allowed to edit this page."
+msgstr "Ви не маєте права редагувати цю сторінку."
+
+#: includes/store.php:275
+msgid "The page template changed while the form was open. Your changes were not saved: reload the page and enter them again."
+msgstr "Поки форма була відкрита, шаблон сторінки змінився. Ваші зміни не збережено: оновіть сторінку й внесіть їх ще раз."
+
+#: includes/store.php:286
+msgid "The page was not saved: fix the fields marked below."
+msgstr "Сторінку не збережено: виправте поля, позначені нижче."
+
+#: includes/store.php:297
+msgid "This page is being saved by someone else right now. Try again in a few seconds."
+msgstr "Цю сторінку саме зараз зберігає хтось інший. Спробуйте ще раз за кілька секунд."
+
+#: includes/store.php:340
+msgid "The page was not saved: database error. Try again."
+msgstr "Сторінку не збережено: помилка бази даних. Спробуйте ще раз."
+
+#: includes/store.php:361
+msgid "While the form was open, the values of this page were removed. Your changes were not saved: reload the page."
+msgstr "Поки форма була відкрита, значення цієї сторінки видалено. Ваші зміни не збережено: оновіть сторінку."
+
+#. translators: 1: who saved the page, 2: date and time.
+#: includes/store.php:364
+#, php-format
+msgid "While the form was open, this page was saved by %1$s at %2$s. Your changes were not saved: reload the page and enter them again."
+msgstr "Поки форма була відкрита, сторінку зберіг %1$s о %2$s. Ваші зміни не збережено: оновіть сторінку й внесіть їх ще раз."
+
+#: includes/store.php:365
+msgid "someone"
+msgstr "хтось"
+
+#: includes/store.php:456
+msgid "The page may have been saved only partly: database error. Reload the page and check it."
+msgstr "Сторінку, можливо, збережено лише частково: помилка бази даних. Оновіть сторінку й перевірте її."
+
+#: includes/store.php:625
+msgid "The page template is not available. Update the Spilno plugin or choose another template."
+msgstr "Шаблон сторінки недоступний. Оновіть плагін Spilno або оберіть інший шаблон."

@@ -1,7 +1,7 @@
 <?php
 /**
  * WP-CLI commands: `wp spilno schema-hash`, `wp spilno doctor`,
- * `wp spilno adopt`.
+ * `wp spilno adopt`, `wp spilno ping`.
  *
  * @package Spilno
  */
@@ -80,6 +80,29 @@ WP_CLI::add_command(
 				'type'     => 'assoc',
 				'name'     => 'author',
 				'optional' => true,
+			),
+		),
+	)
+);
+
+WP_CLI::add_command(
+	'spilno ping',
+	'_spilno_cli_ping',
+	array(
+		'shortdesc' => 'Checks the link with the partner: constants, DNS, TCP, TLS, signed ping, clocks, versions, schemas, and the partner pinging this site. Exit code 1 on a failure.',
+		'synopsis'  => array(
+			array(
+				'type'        => 'flag',
+				'name'        => 'reverse',
+				'optional'    => true,
+				'description' => 'Ask the partner to ping this site back (on by default; --no-reverse skips it).',
+			),
+			array(
+				'type'     => 'assoc',
+				'name'     => 'format',
+				'optional' => true,
+				'default'  => 'table',
+				'options'  => array( 'table', 'json', 'csv' ),
 			),
 		),
 	)
@@ -177,4 +200,21 @@ function _spilno_cli_adopt( $args, $assoc_args ) {
 	}
 
 	WP_CLI::success( sprintf( 'Adopted: revision %d (%s).', $result['revision'], $result['rev_id'] ) );
+}
+
+/**
+ * `wp spilno ping`.
+ *
+ * @param array $args       Positional arguments.
+ * @param array $assoc_args Named arguments.
+ * @return void
+ */
+function _spilno_cli_ping( $args, $assoc_args ) {
+	$rows = _spilno_link_check( (bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'reverse', true ) );
+
+	WP_CLI\Utils\format_items( $assoc_args['format'] ?? 'table', $rows, array( 'status', 'step', 'message' ) );
+
+	if ( in_array( 'fail', array_column( $rows, 'status' ), true ) ) {
+		WP_CLI::halt( 1 );
+	}
 }

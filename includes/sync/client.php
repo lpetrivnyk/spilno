@@ -33,6 +33,11 @@ function _spilno_peer_timeout( $op ) {
 		return 3;
 	}
 
+	// The partner pings back within this request: its own connection and ping.
+	if ( 'ping/back' === $op ) {
+		return 10;
+	}
+
 	return 5;
 }
 

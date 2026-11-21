@@ -23,7 +23,8 @@ add_action( 'plugins_loaded', '_spilno_endpoint_intercept', 1 );
 /**
  * Operations of the endpoint: path after the prefix → method and handler.
  *
- * Stage 4a has `ping` only. `dev/echo` (POST with a JSON body) exists only on
+ * Stage 4a has `ping` and `ping/back` (the partner pings the sender back,
+ * «Check the link» §E3.6). `dev/echo` (POST with a JSON body) exists only on
  * `local` / `development` with `SPILNO_DEV_ENDPOINT` set by the test harness:
  * it exercises the body checks before the real POST operations arrive.
  *
@@ -31,9 +32,13 @@ add_action( 'plugins_loaded', '_spilno_endpoint_intercept', 1 );
  */
 function _spilno_endpoint_ops() {
 	$ops = array(
-		'ping' => array(
+		'ping'      => array(
 			'method'  => 'GET',
 			'handler' => '_spilno_op_ping',
+		),
+		'ping/back' => array(
+			'method'  => 'GET',
+			'handler' => '_spilno_op_ping_back',
 		),
 	);
 

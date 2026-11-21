@@ -53,6 +53,8 @@ require SPILNO_PATH . 'includes/registry.php';
 require SPILNO_PATH . 'includes/contract.php';
 require SPILNO_PATH . 'includes/store.php';
 require SPILNO_PATH . 'includes/adopt.php';
+require SPILNO_PATH . 'includes/slots.php';
+require SPILNO_PATH . 'includes/render.php';
 require SPILNO_PATH . 'includes/doctor.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {

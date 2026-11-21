@@ -108,9 +108,7 @@ function spilno_test_run() {
 	$check( 'hash: sha256', 1 === preg_match( '/^[0-9a-f]{64}$/', $hash ) );
 	_spilno_registry( true );
 	$check( 'hash: stable after a registry reload', spilno_schema_hash( 'test' ) === $hash );
-	switch_to_locale( 'uk' );
-	$check( 'hash: same under another locale', spilno_schema_hash( 'test' ) === $hash );
-	restore_previous_locale();
+	$check( 'hash: same with every label translated differently', spilno_test_hash_relabelled( 'test' ) === $hash );
 
 	foreach ( array(
 		'label' => true,
@@ -369,6 +367,8 @@ function spilno_test_run() {
 
 	remove_action( 'spilno_values_saved', $listen, 10 );
 
+	spilno_test_about( $check );
+
 	foreach ( $fails as $fail ) {
 		WP_CLI::line( 'FAIL ' . $fail );
 	}
@@ -378,4 +378,181 @@ function spilno_test_run() {
 	if ( $fails ) {
 		WP_CLI::halt( 1 );
 	}
+}
+
+/**
+ * Checks of the template «about»: schema, limits, defaults, hash, render with
+ * full and empty slots, hiding of blocks.
+ *
+ * @param callable $check The check recorder.
+ */
+function spilno_test_about( $check ) {
+	global $wpdb;
+
+	$tables = _spilno_tables();
+	$hash   = spilno_schema_hash( 'about' );
+
+	$check( 'about: registered, valid', null !== spilno_template( 'about' ) && ! isset( _spilno_template_problems()['about'] ) );
+	_spilno_registry( true );
+	$check( 'about: hash stable after a reload', spilno_schema_hash( 'about' ) === $hash );
+	$check( 'about: hash does not depend on the labels (locale)', spilno_test_hash_relabelled( 'about' ) === $hash );
+	$check( 'about: slots', array( 'contacts', 'departments', 'director', 'facts', 'history', 'leadership', 'medics', 'news', 'patients', 'reports', 'vacancies' ) === spilno_template( 'about' )['slots'] );
+
+	$form = spilno_form_schema( 'about' );
+	$find = static function ( $fields, $path ) use ( &$find ) {
+		foreach ( $fields as $f ) {
+			if ( ( $f['path'] ?? '' ) === $path ) {
+				return $f;
+			}
+			$found = $find( array_merge( $f['fields'] ?? array(), ...array_map( static fn( $i ) => $i['fields'], $f['items'] ?? array() ) ), $path );
+			if ( $found ) {
+				return $found;
+			}
+		}
+		return null;
+	};
+	$check( 'about: default of card 2 title (Figma)', 'Ми вітаємо вас' === ( $find( $form['fields'], 'directions.cards.1.title' )['default'] ?? '' ) );
+	$check( 'about: default of tile 4 text (Figma)', 'Від 1949 року до сьогодні' === ( $find( $form['fields'], 'sections.tiles.3.text' )['default'] ?? '' ) );
+	$check( 'about: default of mosaic link 5', 'Контакти' === ( $find( $form['fields'], 'mosaic.links.4.label' )['default'] ?? '' ) );
+	$check( 'about: limits 120 / 300 / 40 / 400', 120 === $find( $form['fields'], 'directions.title' )['max'] && 300 === $find( $form['fields'], 'directions.cards.0.text' )['max'] && 40 === $find( $form['fields'], 'hero.action' )['max'] && 400 === $find( $form['fields'], 'sections.lede' )['max'] && 400 === $find( $form['fields'], 'hero.legal' )['max'] );
+
+	$empty = _spilno_field_empty( spilno_template( 'about' )['root'] );
+	$raw   = _spilno_adopt_blank( spilno_template( 'about' )['root'] );
+	$p     = spilno_parse( 'about', $raw );
+	$check( 'about: empty form parses', array() === $p['errors'] && $p['values'] === $empty, wp_json_encode( $p['errors'] ) );
+
+	$over = static function ( $path, $len ) use ( $raw ) {
+		$r = $raw;
+		_spilno_adopt_set( $r, spilno_template( 'about' )['root'], explode( '.', $path ), str_repeat( 'ж', $len ) );
+		return spilno_parse( 'about', $r )['errors'][ $path ] ?? '';
+	};
+	$check( 'about: title 120 ok, 121 error', '' === $over( 'mosaic.title', 120 ) && '' !== $over( 'mosaic.title', 121 ) );
+	$check( 'about: card text 300 ok, 301 error', '' === $over( 'directions.cards.2.text', 300 ) && '' !== $over( 'directions.cards.2.text', 301 ) );
+	$check( 'about: caption 40 ok, 41 error', '' === $over( 'sections.tiles.5.cta', 40 ) && '' !== $over( 'mosaic.links.0.label', 41 ) );
+	$check( 'about: lede 400 ok, 401 error', '' === $over( 'sections.lede', 400 ) && '' !== $over( 'hero.legal', 401 ) );
+	$check( 'about: alt 300', '' === $over( 'photo_main.alt', 300 ) && '' !== $over( 'photo_main.alt', 301 ) );
+
+	// Render.
+	$page = wp_insert_post( array( 'post_title' => 'spilno-test about', 'post_type' => 'page', 'post_status' => 'publish' ) );
+	$check( 'about: publishable with defaults only', true === spilno_publishable( $page, $empty, 'about' ) );
+	$render = static function ( $context = array() ) use ( $page ) {
+		ob_start();
+		spilno_render( $page, $context + array( 'template' => 'about' ) );
+		return (string) ob_get_clean();
+	};
+	$sections = static function ( $html ) {
+		preg_match_all( '/<section\b[^>]*aria-labelledby="([^"]*)"/', $html, $m );
+		return $m[1];
+	};
+	$no_empty = static function ( $html ) {
+		// No empty heading, paragraph, list or section (a section has more than its head).
+		if ( preg_match( '#<(h[1-3]|p|ul|li)\b[^>]*>\s*</\1>#', $html ) ) {
+			return false;
+		}
+		preg_match_all( '#<section\b.*?</section>#s', $html, $m );
+		foreach ( $m[0] as $section ) {
+			$rest = preg_replace( '#<div class="spilno-section-head.*?</div></div>#s', '', $section );
+			if ( ! preg_match( '#<(ul|div class="spilno-bento|div class="spilno-section__actions)#', $rest ) ) {
+				return false;
+			}
+		}
+		return true;
+	};
+
+	update_option( 'spilno_test_slots', '' );
+	$full = $render( array( 'before' => '<nav class="x-crumbs">crumbs</nav>' ) );
+	$check( 'render: defaults without values', str_contains( $full, 'Люди, які змінюють медицину' ) && str_contains( $full, 'spilno-test about</h1>' ) );
+	$check( 'render: four sections in order', array( 'spilno-about-directions', 'spilno-about-mosaic', 'spilno-about-sections', 'spilno-about-news' ) === $sections( $full ), implode( ',', $sections( $full ) ) );
+	$check( 'render: before printed inside the root', 1 === preg_match( '#<div class="spilno spilno--about">\s*<div class="spilno-backdrop"[^>]*></div>\s*<nav class="x-crumbs">#', $full ) );
+	$check( 'render: lede with both figure sentences', str_contains( $full, 'обласної ради. Заклад вищої акредитаційної категорії. Надає' ) );
+	$check( 'render: plural lines', str_contains( $full, '<li>702 середніх медичних працівники</li>' ) && str_contains( $full, '<li>508 лікарів</li>' ) );
+	$check( 'render: 3 news of 4', 3 === substr_count( $full, 'spilno-news-card__link" href="' . home_url( '/news/' ) ) );
+	$check( 'render: mosaic 4 columns, 3 pills', str_contains( $full, 'spilno-bento--cols-4' ) && 3 === substr_count( $full, 'class="spilno-pill"' ) );
+	$check( 'render: no empty elements (full)', $no_empty( $full ) );
+
+	update_option( 'spilno_test_slots', 'data-empty' );
+	$data = $render();
+	$check( 'empty data: no figures anywhere', ! preg_match( '/1949|1 200|508|702|36 спец|Команда|Акредитація|Ліцензія|НСЗУ/u', wp_strip_all_tags( $data ) ) && ! preg_match( '/spilno-stat|spilno-pill|spilno-bento__card--stat/', $data ) );
+	$check( 'empty data: lede is the legal name only', str_contains( $data, 'обласної ради.</p>' ) );
+	$check( 'empty data: no news section', ! str_contains( $data, 'spilno-about-news' ) && ! str_contains( $data, 'Життя лікарні' ) );
+	$check( 'empty data: history tile without description', 1 === preg_match( '#Історія лікарні</a></h3></div>#u', $data ) );
+	$check( 'empty data: mosaic 3 columns (photo, photo, links)', str_contains( $data, 'spilno-bento--cols-3' ) );
+	$check( 'empty data: sections in order', array( 'spilno-about-directions', 'spilno-about-mosaic', 'spilno-about-sections' ) === $sections( $data ) );
+	$check( 'empty data: no empty elements', $no_empty( $data ) );
+
+	update_option( 'spilno_test_slots', 'all-empty' );
+	$none = $render();
+	$check( 'no targets: no links or buttons at all', ! str_contains( $none, '<a ' ) && ! str_contains( $none, 'spilno-btn' ) );
+	$check( 'no targets: cards and tiles are text', ! str_contains( $none, 'spilno-news-card--link' ) && ! str_contains( $none, 'spilno-tile--link' ) && 6 === substr_count( $none, 'spilno-tile--text' ) && ! str_contains( $none, 'spilno-news-card__more' ) && ! str_contains( $none, 'spilno-tile__cta' ) );
+	$check( 'no targets: mosaic of two photos', str_contains( $none, 'spilno-bento--cols-2' ) );
+	$check( 'no targets: no empty elements', $no_empty( $none ) );
+
+	// Hide blocks, one flag at a time (full slots).
+	update_option( 'spilno_test_slots', '' );
+	$rev = '';
+	foreach ( array(
+		'directions' => static fn( $h ) => ! str_contains( $h, 'spilno-about-directions' ) && ! str_contains( $h, 'Ми вітаємо вас' ),
+		'mosaic'     => static fn( $h ) => ! str_contains( $h, 'spilno-about-mosaic' ) && ! str_contains( $h, 'spilno-pill' ) && ! str_contains( $h, 'Усі відділення' ),
+		'sections'   => static fn( $h ) => ! str_contains( $h, 'spilno-tile' ) && ! str_contains( $h, 'РОЗДІЛИ' ) && str_contains( $h, 'spilno-stat-grid' ) && 1 === preg_match( '#<section class="[^"]*spilno-section--paper[^"]*"><div[^>]*><ul class="spilno-stat-grid#', $h ),
+		'news'       => static fn( $h ) => ! str_contains( $h, 'spilno-about-news' ),
+	) as $flag => $ok ) {
+		$values                    = $empty;
+		$values['hidden'][ $flag ] = true;
+		$saved                     = spilno_save( $page, $values, $rev, array( 'template' => 'about', 'schema_hash' => $hash ) );
+		$rev                       = is_array( $saved ) ? $saved['rev_id'] : $rev;
+		$html                      = $render();
+		$check( "hide $flag: block gone, the rest stays", is_array( $saved ) && $ok( $html ) && 3 === count( $sections( $html ) ), implode( ',', $sections( $html ) ) );
+		$check( "hide $flag: no empty elements", $no_empty( $html ) );
+	}
+
+	// Stored values are rendered, empty ones fall back to defaults.
+	$values                                   = $empty;
+	$values['directions']['cards'][1]['title'] = 'Свій заголовок';
+	$values['photo_main']['alt']              = 'Корпус лікарні';
+	$saved                                    = spilno_save( $page, $values, $rev, array( 'template' => 'about', 'schema_hash' => $hash ) );
+	$html                                     = $render();
+	$check( 'render: stored value shown, others default', is_array( $saved ) && str_contains( $html, '>Свій заголовок</a>' ) && str_contains( $html, '>Змінюємо медицину</a>' ) );
+	$check( 'render: placeholder photo stays decorative', 1 === preg_match( '#spilno-photo-band__media" aria-hidden="true">\\s*<div class="spilno-photo-band__frame"></div>#', $html ) );
+
+	// The render filter: applied on render only, a malformed answer is ignored.
+	$seen = array();
+	$filter = static function ( $values, $id, $template, $context ) use ( &$seen ) {
+		$seen = $context;
+		$values['news']['title'] = 'News (en)';
+		return $values;
+	};
+	add_filter( 'spilno_render_values', $filter, 10, 4 );
+	$html = $render( array( 'lang' => 'en' ) );
+	$check( 'render_values: applied with lang', str_contains( $html, '>News (en)</h2>' ) && 'en' === ( $seen['lang'] ?? '' ) );
+	$check( 'render_values: not seen by spilno_values()', 'News (en)' !== spilno_values( $page )['news']['title'] );
+	remove_filter( 'spilno_render_values', $filter, 10 );
+	$bad = static fn() => array( 'news' => array( 'title' => array( 'x' ) ) );
+	add_filter( 'spilno_render_values', $bad );
+	$check( 'render_values: malformed answer ignored', str_contains( $render(), '>Життя лікарні</h2>' ) );
+	remove_filter( 'spilno_render_values', $bad );
+
+	add_filter( 'spilno_enabled', '__return_false' );
+	$check( 'render: spilno_enabled false → nothing', '' === $render() );
+	remove_filter( 'spilno_enabled', '__return_false' );
+
+	delete_option( 'spilno_test_slots' );
+}
+
+/**
+ * Schema hash with every translatable label changed (as under another
+ * locale): must equal the plain hash.
+ *
+ * @param string $key Template key.
+ * @return string
+ */
+function spilno_test_hash_relabelled( $key ) {
+	$relabel = static fn( $text ) => 'X ' . $text;
+	add_filter( 'gettext', $relabel );
+	_spilno_registry( true );
+	$label = spilno_template( $key )['label'];
+	$hash  = spilno_schema_hash( $key );
+	remove_filter( 'gettext', $relabel );
+	_spilno_registry( true );
+
+	return str_starts_with( $label, 'X ' ) ? $hash : 'labels-not-translated';
 }

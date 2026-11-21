@@ -98,3 +98,75 @@ add_action(
 	},
 	20
 );
+
+/*
+ * Slots of the about template, as the reference site answers them on its
+ * stand (links to the same paths, figures and news of its stand data).
+ * Option `spilno_test_slots`: '' — all filled; 'data-empty' — facts and news
+ * null (as on the second site); 'all-empty' — data null and no link targets.
+ */
+add_filter(
+	'spilno_slot_link',
+	static function ( $url, $slot ) {
+		if ( 'all-empty' === get_option( 'spilno_test_slots' ) ) {
+			return '';
+		}
+
+		$partner = 'https://bpr-okl.ddev.site:33001';
+		$map     = array(
+			'departments' => home_url( '/departments/' ),
+			'patients'    => home_url( '/patients/' ),
+			'medics'      => $partner . '/',
+			'vacancies'   => $partner . '/vacancies/',
+			'history'     => home_url( '/history/' ),
+			'director'    => home_url( '/leadership/' ),
+			'leadership'  => home_url( '/leadership/' ),
+			'reports'     => home_url( '/reports/' ),
+			'contacts'    => home_url( '/contacts/' ),
+		);
+
+		return $map[ $slot ] ?? $url;
+	},
+	10,
+	2
+);
+
+add_filter(
+	'spilno_slot_data',
+	static function ( $data, $slot ) {
+		if ( '' !== (string) get_option( 'spilno_test_slots' ) ) {
+			return null;
+		}
+
+		if ( 'facts' === $slot ) {
+			return array(
+				'founded'       => array( 'value' => '1949' ),
+				'beds'          => array( 'value' => '1 200', 'label' => 'Ліжко-місць' ),
+				'specialties'   => array( 'value' => '36', 'label' => 'Спеціальностей' ),
+				'doctors'       => array( 'value' => '508', 'label' => 'лікарів' ),
+				'nurses'        => array( 'value' => '702', 'label' => 'середніх медичних працівників' ),
+				'junior_staff'  => array( 'value' => '172', 'label' => 'молодшого медичного персоналу' ),
+				'other_staff'   => array( 'value' => '297', 'label' => 'господарського та іншого персоналу' ),
+				'accreditation' => array( 'value' => 'Акредитація вищої категорії' ),
+				'license'       => array( 'value' => 'Ліцензія МОЗ №519 від 24.02.2020' ),
+				'nhsu'          => array( 'value' => 'Договір з НСЗУ' ),
+			);
+		}
+
+		if ( 'news' === $slot ) {
+			return array(
+				array( 'title' => 'Лікарня встановила систему резервного живлення', 'url' => home_url( '/news/likarnia-vstanovyla-systemu-rezervnoho-zhyvlennia/' ), 'meta' => '10 серпня 2026 · для пацієнтів' ),
+				array( 'title' => 'Пам’ятка для пацієнтів перед КТ-дослідженням1', 'url' => home_url( '/news/pamiatka-dlia-patsiientiv-pered-kt-doslidzhenniam1/' ), 'meta' => '6 серпня 2026 · закупівлі' ),
+				array( 'title' => 'Скринінг здоровʼя 40+ тепер і у вечірні години', 'url' => home_url( '/news/skryninh-zdorovia-40-teper-i-u-vechirni-hodyny/' ), 'meta' => '4 серпня 2026 · для пацієнтів' ),
+				array( 'title' => 'Четверта новина не показується', 'url' => home_url( '/news/4/' ), 'meta' => '' ),
+			);
+		}
+
+		return $data;
+	},
+	10,
+	2
+);
+
+// Outside production: photo placeholders, as on the reference stand.
+add_filter( 'spilno_is_preview', static fn() => 'production' !== wp_get_environment_type() );

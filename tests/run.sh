@@ -19,7 +19,16 @@ lint=0; while IFS= read -r f; do php -l "$f" >/dev/null 2>&1 || { bad "php -l $f
 
 # Harness into the stand (idempotent).
 for f in adapter.php tests.php; do ln -sfn "$REPO/tests/dev-mu/$f" "$STAND/wp-content/mu-plugins/spilno-$f"; done
+ln -sfn "$REPO/tests/dev-theme" "$STAND/wp-content/themes/spilno-dev-shell"
 wpx plugin activate spilno >/dev/null
+wpx theme activate spilno-dev-shell >/dev/null
+about=$(wpx post list --post_type=page --name=about --field=ID | tail -1)
+[ -n "$about" ] || about=$(wpx post create --post_type=page --post_title='Про лікарню' --post_name=about --post_status=publish --porcelain | tail -1)
+wpx post meta update "$about" _spilno_test_template about >/dev/null
+
+# Build is reproducible: a fresh build gives the committed CSS and token list.
+(cd "$REPO" && npm run -s build >/dev/null && npm run -s build:shell >/dev/null)
+(cd "$REPO" && git diff --quiet -- assets/spilno.css assets/spilno.tokens.txt tests/dev-theme/shell.css) && ok || bad "build: assets differ from a fresh build (commit them)"
 log="$STAND/wp-content/debug.log"; touch "$log"; log_from=$(wc -l < "$log")
 
 # Migration from zero, then again.
@@ -43,11 +52,15 @@ echo "$out" | grep -q '^spilno-test: .* passed' && ! echo "$out" | grep -q '^FAI
 h1=$(wpx spilno schema-hash test --format=csv); h2=$(wpx spilno schema-hash test --format=csv)
 chk "schema-hash: stable" "$h1" "$h2"
 echo "$h1" | grep -qE '^test,1,[0-9a-f]{64}$' && ok || bad "schema-hash format: $h1"
+a1=$(wpx spilno schema-hash about --format=csv); a2=$(wpx spilno schema-hash about --format=csv)
+chk "schema-hash about: stable" "$a1" "$a2"
+echo "$a1" | grep -qE '^about,1,[0-9a-f]{64}$' && ok || bad "schema-hash about: $a1"
 
 # doctor: no failures.
 doc=$(wpx spilno doctor --format=csv); code=$?
 chk "doctor: exit code" "$code" "0"
 echo "$doc" | grep -q '^fail' && bad "doctor: $(echo "$doc" | grep '^fail')" || ok
+echo "$doc" | grep -q '^warn,theme' && bad "doctor theme: $(echo "$doc" | grep '^warn,theme')" || ok
 
 # Lock: a save waits for the page lock and gives up after 5 s.
 id=$(wpx post list --post_type=page --title='spilno-test record' --field=ID | tail -1)
@@ -69,6 +82,10 @@ chk "http: unknown field → 200" "$(post --data-urlencode 'spilno[zzz][a]=1')" 
 grep -q '"zzz"' "$tmp" && ok || bad "http: error at zzz"
 chk "http: no input → 200" "$(post -d 'x=1')" "200"
 rm -f "$tmp"
+
+# Reference vs stand, theme matrix, keyboard, forced colours, motion, slots.
+vis=$(cd "$REPO" && python3 -I tests/compare/visual.py tests/out/visual 2>&1); echo "$vis" | grep -E '^(FAIL|visual|[0-9]+:)'
+echo "$vis" | grep -q '^visual: .* passed' && ! echo "$vis" | grep -q '^FAIL' && ok || bad "visual"
 
 # PHP notices / warnings / fatals during the run.
 new=$(tail -n +"$((log_from+1))" "$log" | grep -E 'PHP (Fatal|Warning|Notice|Deprecated)|Uncaught' | grep -v 'spilno_save() must not be called inside an open transaction' || true)

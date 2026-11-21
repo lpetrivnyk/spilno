@@ -14,11 +14,11 @@
 $variant = (string) get_option( 'spilno_test_schema_variant', '' );
 
 $template = array(
-	'label'    => 'Test page',
+	'label'    => __( 'Test page', 'spilno' ),
 	'version'  => 'v2' === $variant ? 2 : 1,
 	'sections' => array(
 		'hero'   => array(
-			'label'  => 'label' === $variant ? 'Hero (renamed)' : 'Hero',
+			'label'  => 'label' === $variant ? __( 'Hero (renamed)', 'spilno' ) : __( 'Hero', 'spilno' ),
 			'fields' => array(
 				'title' => array(
 					'type'     => 'text',

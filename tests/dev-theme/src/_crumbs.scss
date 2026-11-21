@@ -1,0 +1,116 @@
+// Хлібні крихти (Figma COMPONENT 11:213 + Breadcrumb Item 11:160).
+//
+// Смуга — .ds-band (спільна з Шапкою сторінки), тут лише сам ланцюжок.
+// Висоти смуги на 100 %: 48 Desktop, 44 Tablet, 38 Mobile — це
+// gap/block (24/20/16) плюс один рядок body-sm × 1,6 (24/24/22).
+.ds-crumbs {
+  // Родина явно (понад bpr): на сторінках прототипу body дає Onest 18px,
+  // а в bpr родину ставила база client на html body.
+  font-family: var(--ds-font-base);
+
+  &__list {
+    display:   flex;
+    flex-wrap: wrap;   // HORIZONTAL + wrap із макета.
+    align-items: center;
+
+    // gap/crumbs 8 по обох осях: у Figma itemSpacing і counterAxisSpacing
+    // однакові, тож переноси лягають із тим самим проміжком.
+    gap:     var(--ds-gap-crumbs);
+
+    // Скидання списку: крапки й відступи тут не потрібні, але <ol>
+    // лишається, бо порядок крихт несе сенс.
+    margin:  0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    display:     flex;
+    align-items: center;
+    gap:         var(--ds-gap-crumbs);
+
+    // Роздільник — псевдоелемент, а не вузол DOM.
+    //
+    // `/ ""` — альтернативний текст CSS Speech: там, де він підтримується,
+    // читачка мовчить замість «слеш» між кожною парою крихт.
+    //
+    // Перед першим елементом роздільника немає, тож + а не :not(:last).
+    // Остання крихта таким чином теж лишається без хвоста.
+    & + &::before {
+      content:     "/" / "";
+      color:       var(--ds-text-placeholder);
+      // Декор: 3,36 : 1 проти bg/paper. Під SC 1.4.11 не підпадає —
+      // роздільник не елемент керування й не несе інформації.
+      font-size:   var(--ds-size-body-sm);
+      line-height: 1.6;
+    }
+  }
+}
+
+.ds-crumb {
+  // Gilroy Regular, size/body-sm, lh 160 % (24/15 на Desktop) — із
+  // макета; токена line-height у наборі немає, як і для футера.
+  font-size:   var(--ds-size-body-sm);
+  line-height: 1.6;
+  font-weight: 400;
+  color:       var(--ds-text-subtle);
+  text-decoration: none;
+
+  // Довга назва сторінки не має розпирати сітку вбік.
+  overflow-wrap: anywhere;
+
+  // ВІДХИЛЕННЯ: у макеті Hover міняє лише колір, і той самий колір має
+  // Current — наведення на посилання виглядає як «ви тут».
+  // Підкреслення розводить ці два стани й нічого не коштує.
+  @media (hover: hover) {
+    &:hover {
+      color:           var(--ds-text-ink);
+      text-decoration: underline;
+    }
+  }
+
+  // ВІДХИЛЕННЯ: focus-стану в макеті немає — це провал SC 2.4.7.
+  // Кільце text/ink: 19,31 / 13,80 / 19,31 / 19,31 проти bg/paper.
+  &:focus-visible {
+    outline:        var(--ds-stroke-focus) solid var(--ds-text-ink);
+    outline-offset: var(--ds-offset-focus);
+    border-radius:  var(--ds-radius-control);
+    color:          var(--ds-text-ink);
+    text-decoration: underline;
+  }
+
+  // Поточна сторінка: не посилання, тож ні hover, ні підкреслення.
+  &--current {
+    color: var(--ds-text-ink);
+  }
+
+  // Проміжний розділ без сторінки: колір звичайної крихти, але без
+  // Hover-підкреслення — воно обіцяло б перехід, якого немає.
+  &--text {
+    @media (hover: hover) {
+      &:hover {
+        color:           var(--ds-text-subtle);
+        text-decoration: none;
+      }
+    }
+  }
+
+}
+
+// Правило підкреслення з client.scss навмисно оминає все з класом ds-*,
+// тож своє — так само, як у .ds-footer-link. Селектор саме a.ds-crumb:
+// Current підкреслювати нічого, він не посилання.
+html[data-links="underline"] a.ds-crumb {
+  text-decoration: underline;
+}
+
+@media (forced-colors: active) {
+  .ds-crumb          { color: LinkText; }
+  .ds-crumb--current,
+  .ds-crumb--text    { color: CanvasText; }
+
+  .ds-crumb:focus-visible { outline-color: CanvasText; }
+
+  // Роздільник лишається видимим системним кольором.
+  .ds-crumbs__item + .ds-crumbs__item::before { color: CanvasText; }
+}

@@ -84,7 +84,7 @@ function spilno_resolve_url( $url ) {
 function spilno_record_url( $record_id ) {
 	$url = apply_filters( 'spilno_record_url', '', (int) $record_id );
 
-	return is_string( $url ) && wp_http_validate_url( $url ) ? $url : '';
+	return _spilno_valid_url( $url ) ? $url : '';
 }
 
 /**
@@ -97,7 +97,7 @@ function spilno_record_url( $record_id ) {
 function _spilno_slot_link( $slot, $template ) {
 	$url = apply_filters( 'spilno_slot_link', '', (string) $slot, (string) $template );
 
-	return is_string( $url ) && '' !== $url && wp_http_validate_url( $url ) ? $url : '';
+	return _spilno_valid_url( $url ) ? $url : '';
 }
 
 /**
@@ -139,4 +139,22 @@ function _spilno_site_label() {
  */
 function _spilno_site_id() {
 	return defined( 'SPILNO_SITE_ID' ) && is_string( SPILNO_SITE_ID ) ? SPILNO_SITE_ID : '';
+}
+
+/**
+ * Whether an adapter answer is an absolute http(s) URL. Not
+ * `wp_http_validate_url()`: that one is for outgoing requests and refuses
+ * ports and local hosts — a stand link is legitimate here.
+ *
+ * @param mixed $url Answer.
+ * @return bool
+ */
+function _spilno_valid_url( $url ) {
+	if ( ! is_string( $url ) || '' === $url || esc_url_raw( $url, array( 'http', 'https' ) ) !== $url ) {
+		return false;
+	}
+
+	$parts = wp_parse_url( $url );
+
+	return is_array( $parts ) && in_array( $parts['scheme'] ?? '', array( 'http', 'https' ), true ) && '' !== ( $parts['host'] ?? '' );
 }

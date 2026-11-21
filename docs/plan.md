@@ -100,3 +100,15 @@ Deviations:
   reproducible; never loaded by the plugin). Token files are copies of the
   reference theme's generated files (identical in the second theme), fonts
   Gilroy + Onest.
+
+### Stage 4 — split into parts (owner, 2026-11-21)
+
+Stage 4 of the plan is done in parts, each with a stop and a report:
+
+| Part | Scope |
+|---|---|
+| 4a | Partner stand `spilno-dev-b`, endpoint `/wp-spilno/v1/*` and its protection (§B), signed client, `ping` and «Check the link» in CLI (§E3) |
+| 4b | Link registry (`spilno_links`) and handshake, wp-admin screen (with the «Check the link» button) |
+| 4c | Page synchronisation, queue, cron, «read only» on the non-source |
+| 4d | Media (§B1, §E4) |
+| 4e | Cloned-database detector, trash refusal for linked pages, the rest of the CLI, tag `0.2.0` |

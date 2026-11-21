@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-21T19:19:47+02:00\n"
+"POT-Creation-Date: 2026-11-21T19:35:08+02:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: spilno\n"
@@ -46,7 +46,7 @@ msgid "The site adapter returned an invalid adopt map."
 msgstr ""
 
 #: includes/adopt.php:72
-#: includes/fields.php:320
+#: includes/fields.php:340
 msgid "Unknown field."
 msgstr ""
 
@@ -66,44 +66,76 @@ msgstr ""
 msgid "The site adapter returned an invalid answer for this URL."
 msgstr ""
 
-#: includes/fields.php:133
+#: includes/fields.php:158
 msgid "The text contains invalid characters."
 msgstr ""
 
-#: includes/fields.php:139
+#: includes/fields.php:164
 msgid "Remove HTML tags and codes like %20 or &amp; — the field accepts plain text only."
 msgstr ""
 
 #. translators: %d: maximum number of characters.
-#: includes/fields.php:144
+#: includes/fields.php:169
 #, php-format
 msgid "No more than %d character."
 msgid_plural "No more than %d characters."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/fields.php:164
-#: includes/fields.php:231
-#: includes/fields.php:271
-#: includes/fields.php:381
+#: includes/fields.php:189
+#: includes/fields.php:256
+#: includes/fields.php:296
+#: includes/fields.php:396
 msgid "Invalid value."
 msgstr ""
 
-#: includes/fields.php:189
+#: includes/fields.php:214
 msgid "This field is missing from the form. Reload the page and try again."
 msgstr ""
 
-#: includes/fields.php:256
+#: includes/fields.php:281
 msgid "Choose an image from the media library."
 msgstr ""
 
-#: includes/fields.php:440
+#: includes/fields.php:450
 msgid "This field is missing."
 msgstr ""
 
-#: includes/fields.php:490
+#: includes/fields.php:495
 msgid "This field is required."
 msgstr ""
+
+#. translators: %s: number of doctors.
+#: includes/slots.php:98
+#, php-format
+msgid "%s doctor"
+msgid_plural "%s doctors"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of nurses and other mid-level medical staff.
+#: includes/slots.php:102
+#, php-format
+msgid "%s nurse"
+msgid_plural "%s nurses"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of junior medical staff.
+#: includes/slots.php:106
+#, php-format
+msgid "%s junior medical staff member"
+msgid_plural "%s junior medical staff members"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of staff of other services.
+#: includes/slots.php:110
+#, php-format
+msgid "%s staff member of other services"
+msgid_plural "%s staff members of other services"
+msgstr[0] ""
+msgstr[1] ""
 
 #: includes/store.php:209
 msgid "The page cannot be published: fix the fields marked below."
@@ -153,4 +185,161 @@ msgstr ""
 
 #: includes/store.php:625
 msgid "The page template is not available. Update the Spilno plugin or choose another template."
+msgstr ""
+
+#: templates/about/render.php:32
+msgid "An institution of the highest accreditation category."
+msgstr ""
+
+#. translators: %s: number of specialties.
+#: templates/about/render.php:37
+#, php-format
+msgid "Provides highly qualified specialised inpatient and consultative medical care in %s specialties."
+msgstr ""
+
+#. translators: %s: the year the hospital was founded.
+#: templates/about/render.php:90
+#, php-format
+msgid "Caring for health since %s"
+msgstr ""
+
+#: templates/about/render.php:168
+msgid "Read"
+msgstr ""
+
+#: templates/about/schema.php:46
+msgid "About the hospital"
+msgstr ""
+
+#: templates/about/schema.php:50
+msgid "Page head"
+msgstr ""
+
+#: templates/about/schema.php:52
+msgid "First sentence under the title (legal name)"
+msgstr ""
+
+#: templates/about/schema.php:53
+msgid "Button under the title"
+msgstr ""
+
+#: templates/about/schema.php:57
+msgid "Main photo"
+msgstr ""
+
+#: templates/about/schema.php:59
+msgid "Main photo (1360 × 600)"
+msgstr ""
+
+#: templates/about/schema.php:62
+msgid "Alternative text (empty — the photo is decorative)"
+msgstr ""
+
+#: templates/about/schema.php:68
+msgid "People who change medicine"
+msgstr ""
+
+#: templates/about/schema.php:70
+#: templates/about/schema.php:104
+#: templates/about/schema.php:131
+#: templates/about/schema.php:180
+msgid "Block title"
+msgstr ""
+
+#: templates/about/schema.php:73
+msgid "Card"
+msgstr ""
+
+#: templates/about/schema.php:93
+#: templates/about/schema.php:170
+msgid "Title"
+msgstr ""
+
+#: templates/about/schema.php:94
+msgid "Text"
+msgstr ""
+
+#: templates/about/schema.php:95
+#: templates/about/schema.php:172
+msgid "Link caption"
+msgstr ""
+
+#: templates/about/schema.php:96
+msgid "Photo"
+msgstr ""
+
+#: templates/about/schema.php:102
+msgid "Open the door to modern medicine"
+msgstr ""
+
+#: templates/about/schema.php:105
+msgid "Link to the history"
+msgstr ""
+
+#: templates/about/schema.php:106
+msgid "Title of the staff card"
+msgstr ""
+
+#: templates/about/schema.php:109
+msgid "Link"
+msgstr ""
+
+#: templates/about/schema.php:119
+msgid "Caption"
+msgstr ""
+
+#: templates/about/schema.php:122
+msgid "Button under the block"
+msgstr ""
+
+#: templates/about/schema.php:123
+msgid "Mosaic photo, low (322 × 254)"
+msgstr ""
+
+#: templates/about/schema.php:124
+msgid "Mosaic photo, tall (322 × 600)"
+msgstr ""
+
+#: templates/about/schema.php:128
+msgid "Documents, management, reporting"
+msgstr ""
+
+#: templates/about/schema.php:130
+msgid "Eyebrow"
+msgstr ""
+
+#: templates/about/schema.php:132
+msgid "Subtitle"
+msgstr ""
+
+#: templates/about/schema.php:135
+msgid "Tile"
+msgstr ""
+
+#: templates/about/schema.php:171
+msgid "Description"
+msgstr ""
+
+#: templates/about/schema.php:178
+msgid "Hospital life"
+msgstr ""
+
+#: templates/about/schema.php:184
+msgid "Hide blocks"
+msgstr ""
+
+#: templates/about/schema.php:188
+msgid "Hide the block «People who change medicine»"
+msgstr ""
+
+#: templates/about/schema.php:192
+msgid "Hide the mosaic with its button and badges"
+msgstr ""
+
+#: templates/about/schema.php:196
+msgid "Hide the section tiles"
+msgstr ""
+
+#: templates/about/schema.php:200
+msgid "Hide the news"
 msgstr ""

@@ -48,7 +48,7 @@ msgid "The site adapter returned an invalid adopt map."
 msgstr "Адаптер сайту повернув неправильну мапу перенесення."
 
 #: includes/adopt.php:72
-#: includes/fields.php:320
+#: includes/fields.php:340
 msgid "Unknown field."
 msgstr "Невідоме поле."
 
@@ -68,16 +68,16 @@ msgstr "На сайті немає адаптера для адрес сторі
 msgid "The site adapter returned an invalid answer for this URL."
 msgstr "Адаптер сайту повернув неправильну відповідь для цієї адреси."
 
-#: includes/fields.php:133
+#: includes/fields.php:158
 msgid "The text contains invalid characters."
 msgstr "Текст містить неприпустимі символи."
 
-#: includes/fields.php:139
+#: includes/fields.php:164
 msgid "Remove HTML tags and codes like %20 or &amp; — the field accepts plain text only."
 msgstr "Приберіть HTML-теги й коди на кшталт %20 чи &amp; — поле приймає лише текст."
 
 #. translators: %d: maximum number of characters.
-#: includes/fields.php:144
+#: includes/fields.php:169
 #, php-format
 msgid "No more than %d character."
 msgid_plural "No more than %d characters."
@@ -85,28 +85,64 @@ msgstr[0] "Не більше %d символу."
 msgstr[1] "Не більше %d символів."
 msgstr[2] "Не більше %d символів."
 
-#: includes/fields.php:164
-#: includes/fields.php:231
-#: includes/fields.php:271
-#: includes/fields.php:381
+#: includes/fields.php:189
+#: includes/fields.php:256
+#: includes/fields.php:296
+#: includes/fields.php:396
 msgid "Invalid value."
 msgstr "Неправильне значення."
 
-#: includes/fields.php:189
+#: includes/fields.php:214
 msgid "This field is missing from the form. Reload the page and try again."
 msgstr "Цього поля немає у формі. Оновіть сторінку й спробуйте ще раз."
 
-#: includes/fields.php:256
+#: includes/fields.php:281
 msgid "Choose an image from the media library."
 msgstr "Оберіть зображення з медіатеки."
 
-#: includes/fields.php:440
+#: includes/fields.php:450
 msgid "This field is missing."
 msgstr "Цього поля немає."
 
-#: includes/fields.php:490
+#: includes/fields.php:495
 msgid "This field is required."
 msgstr "Це поле обовʼязкове."
+
+#. translators: %s: number of doctors.
+#: includes/slots.php:98
+#, php-format
+msgid "%s doctor"
+msgid_plural "%s doctors"
+msgstr[0] "%s лікар"
+msgstr[1] "%s лікарі"
+msgstr[2] "%s лікарів"
+
+#. translators: %s: number of nurses and other mid-level medical staff.
+#: includes/slots.php:102
+#, php-format
+msgid "%s nurse"
+msgid_plural "%s nurses"
+msgstr[0] "%s середній медичний працівник"
+msgstr[1] "%s середніх медичних працівники"
+msgstr[2] "%s середніх медичних працівників"
+
+#. translators: %s: number of junior medical staff.
+#: includes/slots.php:106
+#, php-format
+msgid "%s junior medical staff member"
+msgid_plural "%s junior medical staff members"
+msgstr[0] "%s працівник молодшого медперсоналу"
+msgstr[1] "%s працівники молодшого медперсоналу"
+msgstr[2] "%s працівників молодшого медперсоналу"
+
+#. translators: %s: number of staff of other services.
+#: includes/slots.php:110
+#, php-format
+msgid "%s staff member of other services"
+msgid_plural "%s staff members of other services"
+msgstr[0] "%s працівник інших служб"
+msgstr[1] "%s працівники інших служб"
+msgstr[2] "%s працівників інших служб"
 
 #: includes/store.php:209
 msgid "The page cannot be published: fix the fields marked below."
@@ -157,3 +193,161 @@ msgstr "Сторінку, можливо, збережено лише частк
 #: includes/store.php:625
 msgid "The page template is not available. Update the Spilno plugin or choose another template."
 msgstr "Шаблон сторінки недоступний. Оновіть плагін Spilno або оберіть інший шаблон."
+
+#: templates/about/render.php:32
+msgid "An institution of the highest accreditation category."
+msgstr "Заклад вищої акредитаційної категорії."
+
+#. translators: %s: number of specialties.
+#: templates/about/render.php:37
+#, php-format
+msgid "Provides highly qualified specialised inpatient and consultative medical care in %s specialties."
+msgstr "Надає висококваліфіковану спеціалізовану стаціонарну і консультативну медичну допомогу за %s спеціальностями."
+
+#. translators: %s: the year the hospital was founded.
+#: templates/about/render.php:90
+#, php-format
+msgid "Caring for health since %s"
+msgstr "Піклуємося про здоров’я з %s року"
+
+#: templates/about/render.php:168
+msgid "Read"
+msgstr "Читати"
+
+#: templates/about/schema.php:46
+msgid "About the hospital"
+msgstr "Про лікарню"
+
+#: templates/about/schema.php:50
+msgid "Page head"
+msgstr "Шапка сторінки"
+
+#: templates/about/schema.php:52
+msgid "First sentence under the title (legal name)"
+msgstr "Перше речення під заголовком (юридична назва)"
+
+#: templates/about/schema.php:53
+msgid "Button under the title"
+msgstr "Кнопка під заголовком"
+
+#: templates/about/schema.php:57
+msgid "Main photo"
+msgstr "Головне фото"
+
+#: templates/about/schema.php:59
+msgid "Main photo (1360 × 600)"
+msgstr "Головне фото (1360 × 600)"
+
+#: templates/about/schema.php:62
+msgid "Alternative text (empty — the photo is decorative)"
+msgstr "Альтернативний текст (порожній — фото декоративне)"
+
+#: templates/about/schema.php:68
+msgid "People who change medicine"
+msgstr "Люди, які змінюють медицину"
+
+#: templates/about/schema.php:70
+#: templates/about/schema.php:104
+#: templates/about/schema.php:131
+#: templates/about/schema.php:180
+msgid "Block title"
+msgstr "Заголовок блока"
+
+#: templates/about/schema.php:73
+msgid "Card"
+msgstr "Картка"
+
+#: templates/about/schema.php:93
+#: templates/about/schema.php:170
+msgid "Title"
+msgstr "Заголовок"
+
+#: templates/about/schema.php:94
+msgid "Text"
+msgstr "Текст"
+
+#: templates/about/schema.php:95
+#: templates/about/schema.php:172
+msgid "Link caption"
+msgstr "Підпис посилання"
+
+#: templates/about/schema.php:96
+msgid "Photo"
+msgstr "Фото"
+
+#: templates/about/schema.php:102
+msgid "Open the door to modern medicine"
+msgstr "Відкрийте двері до сучасної медицини"
+
+#: templates/about/schema.php:105
+msgid "Link to the history"
+msgstr "Посилання на історію"
+
+#: templates/about/schema.php:106
+msgid "Title of the staff card"
+msgstr "Заголовок картки колективу"
+
+#: templates/about/schema.php:109
+msgid "Link"
+msgstr "Посилання"
+
+#: templates/about/schema.php:119
+msgid "Caption"
+msgstr "Підпис"
+
+#: templates/about/schema.php:122
+msgid "Button under the block"
+msgstr "Кнопка під блоком"
+
+#: templates/about/schema.php:123
+msgid "Mosaic photo, low (322 × 254)"
+msgstr "Фото мозаїки, низьке (322 × 254)"
+
+#: templates/about/schema.php:124
+msgid "Mosaic photo, tall (322 × 600)"
+msgstr "Фото мозаїки, високе (322 × 600)"
+
+#: templates/about/schema.php:128
+msgid "Documents, management, reporting"
+msgstr "Документи, керівництво, звітність"
+
+#: templates/about/schema.php:130
+msgid "Eyebrow"
+msgstr "Надзаголовок"
+
+#: templates/about/schema.php:132
+msgid "Subtitle"
+msgstr "Підзаголовок"
+
+#: templates/about/schema.php:135
+msgid "Tile"
+msgstr "Плитка"
+
+#: templates/about/schema.php:171
+msgid "Description"
+msgstr "Опис"
+
+#: templates/about/schema.php:178
+msgid "Hospital life"
+msgstr "Життя лікарні"
+
+#: templates/about/schema.php:184
+msgid "Hide blocks"
+msgstr "Приховати блоки"
+
+#: templates/about/schema.php:188
+msgid "Hide the block «People who change medicine»"
+msgstr "Приховати блок «Люди, які змінюють медицину»"
+
+#: templates/about/schema.php:192
+msgid "Hide the mosaic with its button and badges"
+msgstr "Приховати мозаїку разом із кнопкою й мітками"
+
+#: templates/about/schema.php:196
+msgid "Hide the section tiles"
+msgstr "Приховати плитки розділів"
+
+#: templates/about/schema.php:200
+msgid "Hide the news"
+msgstr "Приховати новини"
+

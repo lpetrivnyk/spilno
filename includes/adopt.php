@@ -165,12 +165,8 @@ function _spilno_adopt_set( array &$raw, array $field, array $parts, $value ) {
 			return false;
 		}
 
-		$child = array(
-			'type'   => 'group',
-			'count'  => 0,
-			'fields' => $field['fields'],
-		);
 		$part  = (int) $part;
+		$child = _spilno_list_item( $field, $part );
 	} elseif ( isset( $field['fields'][ $part ] ) ) {
 		$child = $field['fields'][ $part ];
 	} else {

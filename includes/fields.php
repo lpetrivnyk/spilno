@@ -42,6 +42,31 @@ function _spilno_path( $path, $key ) {
 }
 
 /**
+ * One item of a list group, as a plain group: the list's fields with the
+ * item's own defaults.
+ *
+ * @param array $field Normalized list group.
+ * @param int   $i     Item index.
+ * @return array
+ */
+function _spilno_list_item( array $field, $i ) {
+	$fields = $field['fields'];
+
+	foreach ( $field['defaults'][ $i ] ?? array() as $key => $default ) {
+		$fields[ $key ]['default'] = $default;
+	}
+
+	return array(
+		'type'     => 'group',
+		'count'    => 0,
+		'label'    => $field['label'],
+		'help'     => $field['help'],
+		'fields'   => $fields,
+		'defaults' => array(),
+	);
+}
+
+/**
  * Empty value of a field: what a field holds when nothing was entered
  * (an empty text or image means «use the default» at render time).
  *
@@ -276,17 +301,12 @@ function _spilno_group_parse( array $field, $raw, $path, array &$errors ) {
 	$raw = (array) $raw;
 
 	if ( $field['count'] > 0 ) {
-		$item  = array(
-			'type'   => 'group',
-			'count'  => 0,
-			'fields' => $field['fields'],
-		);
 		$value = array();
 
 		_spilno_unknown_keys( $raw, range( 0, $field['count'] - 1 ), $path, $errors );
 
 		for ( $i = 0; $i < $field['count']; $i++ ) {
-			$value[] = _spilno_group_parse( $item, $raw[ $i ] ?? null, _spilno_path( $path, $i ), $errors );
+			$value[] = _spilno_group_parse( _spilno_list_item( $field, $i ), $raw[ $i ] ?? null, _spilno_path( $path, $i ), $errors );
 		}
 
 		return $value;
@@ -344,15 +364,10 @@ function _spilno_field_normalize( array $field, $stored ) {
 	$stored = is_array( $stored ) ? $stored : array();
 
 	if ( $field['count'] > 0 ) {
-		$item  = array(
-			'type'   => 'group',
-			'count'  => 0,
-			'fields' => $field['fields'],
-		);
 		$value = array();
 
 		for ( $i = 0; $i < $field['count']; $i++ ) {
-			$value[] = _spilno_field_normalize( $item, $stored[ $i ] ?? null );
+			$value[] = _spilno_field_normalize( _spilno_list_item( $field, $i ), $stored[ $i ] ?? null );
 		}
 
 		return $value;
@@ -421,11 +436,6 @@ function _spilno_field_validate( array $field, $value, $path, array &$errors ) {
 	}
 
 	if ( $field['count'] > 0 ) {
-		$item = array(
-			'type'   => 'group',
-			'count'  => 0,
-			'fields' => $field['fields'],
-		);
 		$keys = range( 0, $field['count'] - 1 );
 	} else {
 		$keys = array_keys( $field['fields'] );
@@ -434,7 +444,7 @@ function _spilno_field_validate( array $field, $value, $path, array &$errors ) {
 	_spilno_unknown_keys( $value, $keys, $path, $errors );
 
 	foreach ( $keys as $key ) {
-		$child = $field['count'] > 0 ? $item : $field['fields'][ $key ];
+		$child = $field['count'] > 0 ? _spilno_list_item( $field, $key ) : $field['fields'][ $key ];
 
 		if ( ! array_key_exists( $key, $value ) ) {
 			$errors[ _spilno_path( $path, $key ) ] = __( 'This field is missing.', 'spilno' );
@@ -462,14 +472,9 @@ function _spilno_field_required( array $field, $value, $path, array &$errors ) {
 		$value = is_array( $value ) ? $value : array();
 
 		if ( $field['count'] > 0 ) {
-			$item = array(
-				'type'   => 'group',
-				'count'  => 0,
-				'fields' => $field['fields'],
-			);
 
 			for ( $i = 0; $i < $field['count']; $i++ ) {
-				_spilno_field_required( $item, $value[ $i ] ?? null, _spilno_path( $path, $i ), $errors );
+				_spilno_field_required( _spilno_list_item( $field, $i ), $value[ $i ] ?? null, _spilno_path( $path, $i ), $errors );
 			}
 
 			return;

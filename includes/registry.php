@@ -27,7 +27,9 @@
  * Field keys: `text` / `textarea` — `max` (required), `required`, `default`
  * (string); `image` — `required` (default is always none); `toggle` —
  * `default` (bool); `group` — `fields`, `count` (0 — a single group, N — a
- * fixed list of N items). Every field takes `label` and `help`. Anything else
+ * fixed list of N items) and, for a list, `defaults` (a list of up to N
+ * arrays «field => default» overriding the defaults of text fields per item:
+ * the cards of a design differ). Every field takes `label` and `help`. Anything else
  * makes the template invalid: it is left out of the registry and reported by
  * `wp spilno doctor`.
  *
@@ -109,9 +111,10 @@ function _spilno_schema_canonical( array $field ) {
 	}
 
 	return array(
-		'type'   => 'group',
-		'count'  => $field['count'],
-		'fields' => $fields,
+		'type'     => 'group',
+		'count'    => $field['count'],
+		'fields'   => $fields,
+		'defaults' => $field['defaults'],
 	);
 }
 
@@ -238,11 +241,12 @@ function _spilno_template_normalize( $key, $raw, array &$problems ) {
 	}
 
 	$root = array(
-		'type'   => 'group',
-		'count'  => 0,
-		'label'  => '',
-		'help'   => '',
-		'fields' => array(),
+		'type'     => 'group',
+		'count'    => 0,
+		'label'    => '',
+		'help'     => '',
+		'fields'   => array(),
+		'defaults' => array(),
 	);
 
 	foreach ( $sections as $section_key => $section ) {
@@ -305,7 +309,7 @@ function _spilno_field_normalize_def( $path, $raw, array &$problems ) {
 		'textarea' => array( 'type', 'label', 'help', 'max', 'required', 'default' ),
 		'image'    => array( 'type', 'label', 'help', 'required' ),
 		'toggle'   => array( 'type', 'label', 'help', 'default' ),
-		'group'    => array( 'type', 'label', 'help', 'count', 'fields' ),
+		'group'    => array( 'type', 'label', 'help', 'count', 'fields', 'defaults' ),
 	);
 
 	if ( ! is_string( $type ) || ! isset( $allowed[ $type ] ) ) {
@@ -398,8 +402,61 @@ function _spilno_field_normalize_def( $path, $raw, array &$problems ) {
 			foreach ( $children as $child_key => $child ) {
 				$field['fields'][ $child_key ] = _spilno_field_normalize_def( _spilno_path( $path, $child_key ), $child, $problems );
 			}
+
+			$field['defaults'] = _spilno_list_defaults_def( $path, $field, $raw['defaults'] ?? array(), $problems );
 			break;
 	}
 
 	return $field;
+}
+
+/**
+ * Validates per-item defaults of a list group.
+ *
+ * @param string $path     Dotted path (for messages).
+ * @param array  $field    Normalized group (fields already normalized).
+ * @param mixed  $raw      Definition of `defaults`.
+ * @param array  $problems Problems found (appended to).
+ * @return array<int, array<string, string>> Exactly `count` arrays (or none).
+ */
+function _spilno_list_defaults_def( $path, array $field, $raw, array &$problems ) {
+	if ( array() === $raw ) {
+		return array();
+	}
+
+	if ( 0 === $field['count'] || ! is_array( $raw ) || ! array_is_list( $raw ) || count( $raw ) > $field['count'] ) {
+		$problems[] = $path . ': defaults must be a list of at most count items (lists only)';
+		return array();
+	}
+
+	$out = array();
+
+	foreach ( array_pad( $raw, $field['count'], array() ) as $i => $item ) {
+		$out[ $i ] = array();
+
+		if ( ! is_array( $item ) ) {
+			$problems[] = $path . '.' . $i . ': defaults item must be an array';
+			continue;
+		}
+
+		foreach ( $item as $key => $value ) {
+			$child = $field['fields'][ $key ] ?? null;
+
+			if ( null === $child || ! in_array( $child['type'], array( 'text', 'textarea' ), true ) || ! is_string( $value ) ) {
+				$problems[] = $path . '.' . $i . '.' . $key . ': default only for an existing text field, as a string';
+				continue;
+			}
+
+			list( $parsed, $error ) = _spilno_text_parse( $child, $value );
+
+			if ( '' !== $error || $parsed !== $value ) {
+				$problems[] = $path . '.' . $i . '.' . $key . ': default does not pass the field rules';
+				continue;
+			}
+
+			$out[ $i ][ $key ] = $value;
+		}
+	}
+
+	return $out;
 }

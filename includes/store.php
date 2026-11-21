@@ -81,7 +81,7 @@ function _spilno_form_fields( array $fields, $path, $name ) {
 				$entry['items'][] = array(
 					'path'   => _spilno_path( $entry['path'], $i ),
 					'name'   => $entry['name'] . '[' . $i . ']',
-					'fields' => _spilno_form_fields( $field['fields'], _spilno_path( $entry['path'], $i ), $entry['name'] . '[' . $i . ']' ),
+					'fields' => _spilno_form_fields( _spilno_list_item( $field, $i )['fields'], _spilno_path( $entry['path'], $i ), $entry['name'] . '[' . $i . ']' ),
 				);
 			}
 		} else {

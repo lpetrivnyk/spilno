@@ -81,6 +81,11 @@ function spilno_doctor() {
 		$add( has_filter( $filter ) ? 'ok' : 'warn', 'adapter', $filter . ( has_filter( $filter ) ? '' : ': no adapter' ) );
 	}
 
+	// Theme contract (plan §A3): warnings only, a page never fails on it.
+	foreach ( _spilno_doctor_theme() as $item ) {
+		$add( $item[0], 'theme', $item[1] );
+	}
+
 	// Transactions.
 	$suppress = $wpdb->suppress_errors( true );
 	$in_tx    = $wpdb->get_var( 'SELECT @@in_transaction' );
@@ -114,6 +119,65 @@ function spilno_doctor() {
 
 	// Links (stage 4).
 	$add( 'info', 'links', '' === _spilno_site_id() ? 'links are not configured: pages work locally' : 'site ' . _spilno_site_id() );
+
+	return $out;
+}
+
+/**
+ * Checks the active theme's CSS against the theme contract: every role of
+ * `assets/spilno.tokens.txt`, `--ds-font-base`, `@font-face`, the theme and
+ * text-scale variants. Reads the theme's own `.css` files (no network); the
+ * attributes on `<html>` themselves are set per request and are checked on
+ * the stand.
+ *
+ * @return array<int, array{0: string, 1: string}> Status and message.
+ */
+function _spilno_doctor_theme() {
+	$css   = '';
+	$files = 0;
+
+	foreach ( array_unique( array( get_stylesheet_directory(), get_template_directory() ) ) as $dir ) {
+		if ( ! is_dir( $dir ) ) {
+			continue;
+		}
+
+		$iterator = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $dir, FilesystemIterator::SKIP_DOTS ) );
+
+		foreach ( $iterator as $file ) {
+			$path = $file->getPathname();
+
+			if ( 'css' !== strtolower( $file->getExtension() ) || str_contains( $path, '/node_modules/' ) || $file->getSize() > 4 * MB_IN_BYTES ) {
+				continue;
+			}
+
+			$css .= (string) file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- a local file of the theme.
+			++$files;
+		}
+	}
+
+	if ( '' === $css ) {
+		return array( array( 'warn', 'no CSS files found in the active theme: the theme contract cannot be checked' ) );
+	}
+
+	$out     = array();
+	$roles   = array_filter( array_map( 'trim', (array) file( SPILNO_PATH . 'assets/spilno.tokens.txt' ) ), static fn( $line ) => str_starts_with( $line, '--ds-' ) );
+	$missing = array_values( array_filter( $roles, static fn( $role ) => ! preg_match( '/' . preg_quote( $role, '/' ) . '\\s*:/', $css ) ) );
+
+	$out[] = $missing
+		? array( 'warn', sprintf( '%d of %d roles missing in the theme CSS: %s', count( $missing ), count( $roles ), implode( ', ', array_slice( $missing, 0, 10 ) ) ) )
+		: array( 'ok', sprintf( 'all %d roles of spilno.tokens.txt declared (%d CSS files)', count( $roles ), $files ) );
+
+	$out[] = str_contains( $css, '@font-face' ) ? array( 'ok', '@font-face present' ) : array( 'warn', 'no @font-face in the theme CSS' );
+
+	foreach ( array( '[data-theme="high"]', '[data-theme="dark"]', '[data-theme="mono"]', '[data-text-scale="125"]', '[data-text-scale="150"]' ) as $selector ) {
+		$plain = str_replace( '"', '', $selector );
+
+		if ( ! str_contains( $css, $selector ) && ! str_contains( $css, $plain ) ) {
+			$out[] = array( 'warn', 'no ' . $selector . ' rules in the theme CSS' );
+		}
+	}
+
+	$out[] = array( 'info', '<html> data-theme / data-text-scale / data-links / data-motion are set by the theme per request: check them on the stand' );
 
 	return $out;
 }

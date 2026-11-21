@@ -61,6 +61,7 @@ require SPILNO_PATH . 'includes/doctor.php';
 require SPILNO_PATH . 'includes/sync/config.php';
 require SPILNO_PATH . 'includes/sync/guard.php';
 require SPILNO_PATH . 'includes/sync/endpoint.php';
+require SPILNO_PATH . 'includes/sync/client.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require SPILNO_PATH . 'includes/cli.php';

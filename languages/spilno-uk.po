@@ -1,5 +1,3 @@
-# Copyright (C) 2026 
-# This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
 "Project-Id-Version: Spilno 0.1.0\n"
@@ -9,10 +7,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: uk\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "POT-Creation-Date: 2026-11-21T19:19:47+02:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: spilno\n"
 
@@ -351,3 +349,201 @@ msgstr "Приховати плитки розділів"
 msgid "Hide the news"
 msgstr "Приховати новини"
 
+#: includes/sync/check.php:35
+msgid "The link is not configured: pages work locally."
+msgstr "Зв'язок не налаштовано: сторінки працюють локально."
+
+#. translators: 1: this site's identifier, 2: partner's identifier, 3: partner URL, 4: environment.
+#: includes/sync/check.php:47
+#, php-format
+msgid "Site %1$s, partner %2$s at %3$s, environment %4$s."
+msgstr "Сайт %1$s, партнер %2$s за адресою %3$s, середовище %4$s."
+
+#: includes/sync/check.php:51
+msgid "SPILNO_PEER_IPS is empty: requests from any address are accepted (local / development only)."
+msgstr "SPILNO_PEER_IPS порожня: приймаються запити з будь-якої адреси (лише local / development)."
+
+#: includes/sync/check.php:53
+msgid "SPILNO_PEER_IPS is empty: this site refuses every request of the partner. Add the partner server address."
+msgstr "SPILNO_PEER_IPS порожня: цей сайт відмовляє кожному запиту партнера. Додайте адресу сервера партнера."
+
+#. translators: %s: IP address.
+#: includes/sync/check.php:63
+#, php-format
+msgid "%s is an IP address."
+msgstr "%s — IP-адреса."
+
+#. translators: %s: host name.
+#: includes/sync/check.php:69
+#, php-format
+msgid "The name %s does not resolve."
+msgstr "Ім'я %s не розв'язується (DNS)."
+
+#. translators: 1: host name, 2: addresses.
+#: includes/sync/check.php:74
+#, php-format
+msgid "%1$s → %2$s"
+msgstr "%1$s → %2$s"
+
+#. translators: %s: host name.
+#: includes/sync/check.php:82
+#, php-format
+msgid "WP_HTTP_BLOCK_EXTERNAL is on in wp-config.php and %s is not in WP_ACCESSIBLE_HOSTS: add it there."
+msgstr "У wp-config.php увімкнено WP_HTTP_BLOCK_EXTERNAL, а %s немає у WP_ACCESSIBLE_HOSTS: додайте його туди."
+
+#. translators: 1: host name, 2: error, 3: host name, 4: port.
+#: includes/sync/check.php:92
+#, php-format
+msgid "The server cannot open a connection to %1$s: %2$s. Ask the hosting to allow outgoing HTTPS to %3$s:%4$d."
+msgstr "Сервер не може відкрити з'єднання з %1$s: %2$s. Попросіть хостинг дозволити вихідний HTTPS на %3$s:%4$d."
+
+#. translators: 1: host name, 2: port.
+#: includes/sync/check.php:98
+#, php-format
+msgid "Connection to %1$s:%2$d opens."
+msgstr "З'єднання з %1$s:%2$d відкривається."
+
+#. translators: 1: host name, 2: error.
+#: includes/sync/check.php:118
+#, php-format
+msgid "The certificate of %1$s is not trusted or does not match the name: %2$s"
+msgstr "Сертифікат %1$s не довірений або не відповідає імені: %2$s"
+
+#. translators: 1: host name, 2: error.
+#: includes/sync/check.php:118
+msgid "handshake failed"
+msgstr "рукостискання TLS не вдалося"
+
+#. translators: 1: issuer, 2: expiry date.
+#: includes/sync/check.php:128
+#, php-format
+msgid "Certificate verified: issued by %1$s, valid until %2$s."
+msgstr "Сертифікат перевірено: видав %1$s, дійсний до %2$s."
+
+#: includes/sync/check.php:130
+msgid "Certificate verified."
+msgstr "Сертифікат перевірено."
+
+#. translators: %s: error.
+#: includes/sync/check.php:139
+#, php-format
+msgid "The request failed: %s"
+msgstr "Запит не вдався: %s"
+
+#. translators: %d: HTTP status.
+#: includes/sync/check.php:145
+#, php-format
+msgid "The partner refused: HTTP %d. The reason is in the partner's journal (secret, environment, site identifier, address or clock)."
+msgstr "Партнер відмовив: HTTP %d. Причина — у журналі партнера (секрет, середовище, ідентифікатор сайту, адреса або годинник)."
+
+#. translators: %s: error or HTTP status.
+#: includes/sync/check.php:159
+#, php-format
+msgid "The partner did not run the check: %s"
+msgstr "Партнер не виконав перевірку: %s"
+
+#: includes/sync/check.php:161
+msgid "The partner reaches this site: signed ping accepted."
+msgstr "Партнер досягає цього сайту: підписаний ping прийнято."
+
+#. translators: %s: error or HTTP status.
+#: includes/sync/check.php:166
+#, php-format
+msgid "The partner cannot reach this site: %s. Check its outgoing HTTPS and this site's SPILNO_PEER_IPS."
+msgstr "Партнер не може досягти цього сайту: %s. Перевірте його вихідний HTTPS і SPILNO_PEER_IPS цього сайту."
+
+#. translators: 1: identifier received, 2: identifier expected.
+#: includes/sync/check.php:187
+#, php-format
+msgid "The partner calls itself %1$s, expected %2$s."
+msgstr "Партнер називає себе %1$s, очікувався %2$s."
+
+#. translators: %s: site identifier.
+#: includes/sync/check.php:190
+#, php-format
+msgid "Partner %s answers."
+msgstr "Партнер %s відповідає."
+
+#. translators: 1: partner's environment, 2: this site's environment.
+#: includes/sync/check.php:195
+#, php-format
+msgid "Partner environment %1$s, this site %2$s: pairs are local ↔ local, staging ↔ staging, production ↔ production."
+msgstr "Середовище партнера %1$s, цього сайту %2$s: пари — local ↔ local, staging ↔ staging, production ↔ production."
+
+#. translators: %s: environment.
+#: includes/sync/check.php:198
+#, php-format
+msgid "Both sites are %s."
+msgstr "Обидва сайти — %s."
+
+#. translators: 1: partner's API version, 2: this site's API version.
+#: includes/sync/check.php:203
+#, php-format
+msgid "Contract version of the partner %1$d, of this site %2$d: install the same plugin tag on both."
+msgstr "Версія контракту партнера %1$d, цього сайту %2$d: поставте однаковий тег плагіна на обидва."
+
+#. translators: 1: partner's plugin version, 2: this site's plugin version.
+#: includes/sync/check.php:206
+#, php-format
+msgid "Plugin %1$s on the partner, %2$s here: the same tag on both is expected."
+msgstr "Плагін %1$s у партнера, %2$s тут: на обох очікується однаковий тег."
+
+#. translators: %s: plugin version.
+#: includes/sync/check.php:209
+#, php-format
+msgid "Plugin %s on both."
+msgstr "Плагін %s на обох."
+
+#. translators: %s: template key.
+#: includes/sync/check.php:221
+#, php-format
+msgid "Template %s is missing on the partner."
+msgstr "Шаблону %s немає в партнера."
+
+#. translators: %s: template key.
+#: includes/sync/check.php:224
+#, php-format
+msgid "Template %s is missing on this site."
+msgstr "Шаблону %s немає на цьому сайті."
+
+#. translators: %s: template key.
+#: includes/sync/check.php:227
+#, php-format
+msgid "Template %s differs between the sites: its pages will not synchronise."
+msgstr "Шаблон %s різний на сайтах: його сторінки не синхронізуватимуться."
+
+#. translators: %s: template keys.
+#: includes/sync/check.php:235
+#, php-format
+msgid "Same schemas: %s."
+msgstr "Однакові схеми: %s."
+
+#. translators: %d: seconds.
+#: includes/sync/check.php:242
+#, php-format
+msgid "The clocks differ by %d s: requests are refused beyond 300 s. Set up time synchronisation (NTP) on the servers."
+msgstr "Годинники розходяться на %d с: понад 300 с запити відхиляються. Налаштуйте синхронізацію часу (NTP) на серверах."
+
+#. translators: %d: seconds.
+#: includes/sync/check.php:245
+#, php-format
+msgid "The clocks differ by %d s (refused from 300 s). Set up time synchronisation (NTP) on the servers."
+msgstr "Годинники розходяться на %d с (відмова — з 300 с). Налаштуйте синхронізацію часу (NTP) на серверах."
+
+#. translators: %d: seconds.
+#: includes/sync/check.php:248
+#, php-format
+msgid "Clock difference %d s."
+msgstr "Різниця годинників %d с."
+
+#: includes/sync/client.php:77
+msgid "The link is not configured."
+msgstr "Зв'язок не налаштовано."
+
+#: includes/sync/client.php:116
+msgid "Only https:// addresses are allowed for the partner."
+msgstr "Для партнера дозволені лише адреси https://."
+
+#: includes/sync/guard.php:296
+msgid "Spilno: SPILNO_PEER_IPS is empty, so the synchronisation endpoint refuses every request. Add the partner server address to wp-config.php."
+msgstr "Spilno: SPILNO_PEER_IPS порожня, тому ендпоінт синхронізації відмовляє кожному запиту. Додайте адресу сервера партнера у wp-config.php."

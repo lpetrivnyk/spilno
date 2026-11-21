@@ -3,13 +3,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Spilno 0.1.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/spilno\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-21T19:35:08+02:00\n"
+"POT-Creation-Date: 2026-11-21T20:25:12+02:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: spilno\n"
@@ -185,6 +185,205 @@ msgstr ""
 
 #: includes/store.php:625
 msgid "The page template is not available. Update the Spilno plugin or choose another template."
+msgstr ""
+
+#: includes/sync/check.php:35
+msgid "The link is not configured: pages work locally."
+msgstr ""
+
+#. translators: 1: this site's identifier, 2: partner's identifier, 3: partner URL, 4: environment.
+#: includes/sync/check.php:47
+#, php-format
+msgid "Site %1$s, partner %2$s at %3$s, environment %4$s."
+msgstr ""
+
+#: includes/sync/check.php:51
+msgid "SPILNO_PEER_IPS is empty: requests from any address are accepted (local / development only)."
+msgstr ""
+
+#: includes/sync/check.php:53
+msgid "SPILNO_PEER_IPS is empty: this site refuses every request of the partner. Add the partner server address."
+msgstr ""
+
+#. translators: %s: IP address.
+#: includes/sync/check.php:63
+#, php-format
+msgid "%s is an IP address."
+msgstr ""
+
+#. translators: %s: host name.
+#: includes/sync/check.php:69
+#, php-format
+msgid "The name %s does not resolve."
+msgstr ""
+
+#. translators: 1: host name, 2: addresses.
+#: includes/sync/check.php:74
+#, php-format
+msgid "%1$s → %2$s"
+msgstr ""
+
+#. translators: %s: host name.
+#: includes/sync/check.php:82
+#, php-format
+msgid "WP_HTTP_BLOCK_EXTERNAL is on in wp-config.php and %s is not in WP_ACCESSIBLE_HOSTS: add it there."
+msgstr ""
+
+#. translators: 1: host name, 2: error, 3: host name, 4: port.
+#: includes/sync/check.php:92
+#, php-format
+msgid "The server cannot open a connection to %1$s: %2$s. Ask the hosting to allow outgoing HTTPS to %3$s:%4$d."
+msgstr ""
+
+#. translators: 1: host name, 2: port.
+#: includes/sync/check.php:98
+#, php-format
+msgid "Connection to %1$s:%2$d opens."
+msgstr ""
+
+#. translators: 1: host name, 2: error.
+#: includes/sync/check.php:118
+#, php-format
+msgid "The certificate of %1$s is not trusted or does not match the name: %2$s"
+msgstr ""
+
+#. translators: 1: host name, 2: error.
+#: includes/sync/check.php:118
+msgid "handshake failed"
+msgstr ""
+
+#. translators: 1: issuer, 2: expiry date.
+#: includes/sync/check.php:128
+#, php-format
+msgid "Certificate verified: issued by %1$s, valid until %2$s."
+msgstr ""
+
+#: includes/sync/check.php:130
+msgid "Certificate verified."
+msgstr ""
+
+#. translators: %s: error.
+#: includes/sync/check.php:139
+#, php-format
+msgid "The request failed: %s"
+msgstr ""
+
+#. translators: %d: HTTP status.
+#: includes/sync/check.php:145
+#, php-format
+msgid "The partner refused: HTTP %d. The reason is in the partner's journal (secret, environment, site identifier, address or clock)."
+msgstr ""
+
+#. translators: %s: error or HTTP status.
+#: includes/sync/check.php:159
+#, php-format
+msgid "The partner did not run the check: %s"
+msgstr ""
+
+#: includes/sync/check.php:161
+msgid "The partner reaches this site: signed ping accepted."
+msgstr ""
+
+#. translators: %s: error or HTTP status.
+#: includes/sync/check.php:166
+#, php-format
+msgid "The partner cannot reach this site: %s. Check its outgoing HTTPS and this site's SPILNO_PEER_IPS."
+msgstr ""
+
+#. translators: 1: identifier received, 2: identifier expected.
+#: includes/sync/check.php:187
+#, php-format
+msgid "The partner calls itself %1$s, expected %2$s."
+msgstr ""
+
+#. translators: %s: site identifier.
+#: includes/sync/check.php:190
+#, php-format
+msgid "Partner %s answers."
+msgstr ""
+
+#. translators: 1: partner's environment, 2: this site's environment.
+#: includes/sync/check.php:195
+#, php-format
+msgid "Partner environment %1$s, this site %2$s: pairs are local ↔ local, staging ↔ staging, production ↔ production."
+msgstr ""
+
+#. translators: %s: environment.
+#: includes/sync/check.php:198
+#, php-format
+msgid "Both sites are %s."
+msgstr ""
+
+#. translators: 1: partner's API version, 2: this site's API version.
+#: includes/sync/check.php:203
+#, php-format
+msgid "Contract version of the partner %1$d, of this site %2$d: install the same plugin tag on both."
+msgstr ""
+
+#. translators: 1: partner's plugin version, 2: this site's plugin version.
+#: includes/sync/check.php:206
+#, php-format
+msgid "Plugin %1$s on the partner, %2$s here: the same tag on both is expected."
+msgstr ""
+
+#. translators: %s: plugin version.
+#: includes/sync/check.php:209
+#, php-format
+msgid "Plugin %s on both."
+msgstr ""
+
+#. translators: %s: template key.
+#: includes/sync/check.php:221
+#, php-format
+msgid "Template %s is missing on the partner."
+msgstr ""
+
+#. translators: %s: template key.
+#: includes/sync/check.php:224
+#, php-format
+msgid "Template %s is missing on this site."
+msgstr ""
+
+#. translators: %s: template key.
+#: includes/sync/check.php:227
+#, php-format
+msgid "Template %s differs between the sites: its pages will not synchronise."
+msgstr ""
+
+#. translators: %s: template keys.
+#: includes/sync/check.php:235
+#, php-format
+msgid "Same schemas: %s."
+msgstr ""
+
+#. translators: %d: seconds.
+#: includes/sync/check.php:242
+#, php-format
+msgid "The clocks differ by %d s: requests are refused beyond 300 s. Set up time synchronisation (NTP) on the servers."
+msgstr ""
+
+#. translators: %d: seconds.
+#: includes/sync/check.php:245
+#, php-format
+msgid "The clocks differ by %d s (refused from 300 s). Set up time synchronisation (NTP) on the servers."
+msgstr ""
+
+#. translators: %d: seconds.
+#: includes/sync/check.php:248
+#, php-format
+msgid "Clock difference %d s."
+msgstr ""
+
+#: includes/sync/client.php:77
+msgid "The link is not configured."
+msgstr ""
+
+#: includes/sync/client.php:116
+msgid "Only https:// addresses are allowed for the partner."
+msgstr ""
+
+#: includes/sync/guard.php:296
+msgid "Spilno: SPILNO_PEER_IPS is empty, so the synchronisation endpoint refuses every request. Add the partner server address to wp-config.php."
 msgstr ""
 
 #: templates/about/render.php:32

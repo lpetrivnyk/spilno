@@ -53,3 +53,50 @@ Recorded per stage, with the reason.
   save.
 - CLI lives in `includes/cli.php` (not `includes/sync/`): stage 1 has no sync.
 - No `uninstall.php`: data stays on uninstall (plan §A1).
+
+### Stage 2
+
+Reference: the page «Про лікарню» of the first site as its stand renders it
+(record 495, branch `feature/pages-p5` `6a1cb15`; its working tree had
+uncommitted changes outside the about files). Not Figma: the design of that
+page is already agreed with the owner.
+
+Inherited from the reference as is (plan §A4, differences from Figma
+`1828:83093 / 83183 / 83243`): Tablet — 3 cards instead of 2 (Д23); the
+«Content» band on every width (Д22); news without photos (Д28); a static
+backdrop (Д26); cards on the inverse band are `bg/paper` with a border;
+the mosaic sized by its content; Mobile gap 32 instead of 20; mosaic photo
+radius 16 / 16 / 8; tile 254 instead of 224; side gutters 24 / 16 instead of
+20 / 12.
+
+Deviations:
+
+- `spilno_render( $record_id, $context )` echoes. `$context`: `lang`,
+  `template` (a page without stored values yet renders the defaults of the
+  template its record names) and **`before`** — the site's own escaped markup
+  printed inside the page root above the page head. Reason: the reference
+  draws its breadcrumbs on the page backdrop; with the crumbs outside the root
+  the top of the page would differ from the reference.
+- List groups take per-item `defaults` (the three cards, five links and six
+  tiles of the design have different texts); the defaults are part of the
+  schema hash.
+- The style sheet is enqueued by `spilno_render()`; when the document head is
+  already out it is printed right before the page root (no new public
+  function for an early enqueue).
+- Texts that are not fields (the lede sentences resting on figures, «since
+  {year}», the staff lines with plurals, «Read») are code strings in English
+  with `uk.po`; the field defaults are Ukrainian data of the schema.
+- Data slots: `facts` — `{key: {value, label?}}` of the figures the site may
+  show now (its own confirmation rule); `news` — a list of `{title, url,
+  meta}`, at most 3 shown. Link slots must be absolute http(s) URLs; ports and
+  local hosts are allowed (stands), unlike `wp_http_validate_url()`.
+- The plugin's own reduced-motion rule is scoped to `.spilno` (system setting
+  and `data-motion="reduce"`), so the page does not depend on the theme's.
+- Tokens: `assets/spilno.tokens.txt` (81 roles) is generated from the built
+  CSS by `tools/tokens.mjs`; all are present in the generated token files of
+  both themes, which are byte-identical; `--ds-font-base` comes from the
+  theme as the contract says.
+- Test theme shell: `tests/dev-theme/` (in the repository, so the stand is
+  reproducible; never loaded by the plugin). Token files are copies of the
+  reference theme's generated files (identical in the second theme), fonts
+  Gilroy + Onest.

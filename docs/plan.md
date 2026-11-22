@@ -112,3 +112,46 @@ Stage 4 of the plan is done in parts, each with a stop and a report:
 | 4c | Page synchronisation, queue, cron, «read only» on the non-source |
 | 4d | Media (§B1, §E4) |
 | 4e | Cloned-database detector, trash refusal for linked pages, the rest of the CLI, tag `0.2.0` |
+
+### Stage 4a
+
+Stands: `spilno-dev` (site `a`) and `spilno-dev-b` (site `b`), both
+`https://…ddev.site:33001`, prepared by `tests/stands.sh`; the pair's secrets
+live only in the stands' wp-config.php. ddev must not regenerate those files
+(the `#ddev-generated` marker is removed).
+
+Deviations:
+
+- **Rate-limit and block key** = address + claimed site, as the owner asked;
+  only the expected partner identifier gets its own key, any other claimed
+  value shares one key per address (changing the header does not escape the
+  limit; claiming the partner from another address does not block it).
+- Rate limit and block answer **403**, not 429 (the refusal codes are 401 /
+  403 / 404 / 413 / 400). A wrong method, an unknown path under `/wp-spilno/`
+  and any query string answer 404; missing or malformed signature headers
+  401; a full table of nonces 503.
+- **Nonces** are kept by their request time: deleted once older than 300 s +
+  60 s margin (plan: 15 min — longer than any accepted request time). The
+  cleanup runs on every accepted request, at most 20 rows, index
+  `req_time`; no cron. The nonce of an authenticated request is stored
+  before the body check, so a body refusal (400) keeps it (a replay stays
+  impossible).
+- **Journal of refusals**: `spilno_log`, `record_id` 0, `event` `refused`,
+  `site`, `note` = status, reason, operation, address; the newest 1000 rows
+  are kept. IP refusals are journaled at most once per 10 s (anybody can
+  send them); rate and block — once per window and key.
+- Operation **`ping/back`** (GET, signed): the receiver pings the sender back
+  and reports the result — the plan's «other direction» (§E3.6), not in the
+  §B list.
+- Operation **`dev/echo`** (POST, JSON `{text}`) exists only on `local` /
+  `development` with `SPILNO_DEV_ENDPOINT` (the harness), to test the body
+  checks before the real POST operations exist.
+- Body checks in 4a: a JSON object, allowed keys of the operation, string
+  values with a length limit; `spilno_parse()` of page values comes with 4c.
+- The endpoint reads `spilno_enabled` on `plugins_loaded:1`: a site switches
+  it off from a plugin or a must-use plugin, not from its theme. Its answers
+  are English when the site's translations are not loadable that early.
+- «Check the link», TLS step: trusts the WordPress bundle and the system
+  store, as WordPress requests over curl do (the stand's mkcert CA is in the
+  system store).
+- `SPILNO_DB_VERSION` 1.1.0: table `spilno_nonces (site, nonce, req_time)`.

@@ -129,7 +129,7 @@ Deviations:
 - Rate limit and block answer **403**, not 429 (the refusal codes are 401 /
   403 / 404 / 413 / 400). A wrong method, an unknown path under `/wp-spilno/`
   and any query string answer 404; missing or malformed signature headers
-  401; a full table of nonces 503.
+  401; a nonce table that cannot be written 503.
 - **Nonces** are kept by their request time: deleted once older than 300 s +
   60 s margin (plan: 15 min — longer than any accepted request time). The
   cleanup runs on every accepted request, at most 20 rows, index

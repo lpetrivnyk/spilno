@@ -97,6 +97,22 @@ function _spilno_endpoint_intercept() {
 	// No user for this request, whatever cookies it carries.
 	wp_set_current_user( 0 );
 
+	// Answers read template schemas (their labels go through __()): load the
+	// translations now; when there are none for the locale known this early
+	// (a theme may set it later), unload the domain so that no just-in-time
+	// load runs before `init` — the answers are machine-read.
+	_spilno_load_textdomain();
+
+	if ( ! is_textdomain_loaded( 'spilno' ) ) {
+		// unload_textdomain() marks only a loaded domain; the override marks this one.
+		$mark = static function ( $override, $domain ) {
+			return 'spilno' === $domain ? true : $override;
+		};
+		add_filter( 'override_unload_textdomain', $mark, 10, 2 );
+		unload_textdomain( 'spilno' );
+		remove_filter( 'override_unload_textdomain', $mark, 10 );
+	}
+
 	$header = static function ( $name ) {
 		$key = 'HTTP_' . strtoupper( str_replace( '-', '_', $name ) );
 

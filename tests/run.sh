@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Stage-1 checks on the spilno-dev stand, one run. From the repository root:
+# Checks on the stands, one run (stage 1–2 on spilno-dev, then tests/sync.sh on
+# both stands). From the repository root:
 #   tests/run.sh
 # Needs the stand (ddev project spilno-dev) running.
 set -u
@@ -18,7 +19,7 @@ lint=0; while IFS= read -r f; do php -l "$f" >/dev/null 2>&1 || { bad "php -l $f
 (cd "$REPO" && vendor/bin/phpcs -q --report=summary >/dev/null) && ok || bad "phpcs"
 
 # Harness into the stand (idempotent).
-for f in adapter.php tests.php; do ln -sfn "$REPO/tests/dev-mu/$f" "$STAND/wp-content/mu-plugins/spilno-$f"; done
+for f in "$REPO"/tests/dev-mu/*.php; do ln -sfn "$f" "$STAND/wp-content/mu-plugins/spilno-$(basename "$f")"; done
 ln -sfn "$REPO/tests/dev-theme" "$STAND/wp-content/themes/spilno-dev-shell"
 wpx plugin activate spilno >/dev/null
 wpx theme activate spilno-dev-shell >/dev/null
@@ -32,17 +33,17 @@ wpx post meta update "$about" _spilno_test_template about >/dev/null
 log="$STAND/wp-content/debug.log"; touch "$log"; log_from=$(wc -l < "$log")
 
 # Migration from zero, then again.
-wpx db query "DROP TABLE IF EXISTS wp_spilno_pages, wp_spilno_log" >/dev/null
+wpx db query "DROP TABLE IF EXISTS wp_spilno_pages, wp_spilno_log, wp_spilno_nonces" >/dev/null
 wpx option delete spilno_db_version >/dev/null
-chk "migration: from zero" "$(wpx eval 'echo get_option("spilno_db_version");')" "1.0.0"
-chk "migration: tables" "$(wpx db query "SHOW TABLES LIKE 'wp_spilno_%'" --skip-column-names | grep . | sort | tr -d '\r' | tr '\n' ' ')" "wp_spilno_log wp_spilno_pages "
-before=$(wpx db query "SHOW CREATE TABLE wp_spilno_pages; SHOW CREATE TABLE wp_spilno_log" --skip-column-names | md5sum)
+chk "migration: from zero" "$(wpx eval 'echo get_option("spilno_db_version");')" "1.1.0"
+chk "migration: tables" "$(wpx db query "SHOW TABLES LIKE 'wp_spilno_%'" --skip-column-names | grep . | sort | tr -d '\r' | tr '\n' ' ')" "wp_spilno_log wp_spilno_nonces wp_spilno_pages "
+before=$(wpx db query "SHOW CREATE TABLE wp_spilno_pages; SHOW CREATE TABLE wp_spilno_log; SHOW CREATE TABLE wp_spilno_nonces" --skip-column-names | md5sum)
 chk "migration: current on the next request" "$(wpx eval 'echo _spilno_db_maybe_migrate();')" "current"
 wpx option delete spilno_db_version >/dev/null
-chk "migration: re-run over existing tables" "$(wpx eval 'echo get_option("spilno_db_version");')" "1.0.0"
-chk "migration: re-run changes nothing" "$(wpx db query "SHOW CREATE TABLE wp_spilno_pages; SHOW CREATE TABLE wp_spilno_log" --skip-column-names | md5sum)" "$before"
+chk "migration: re-run over existing tables" "$(wpx eval 'echo get_option("spilno_db_version");')" "1.1.0"
+chk "migration: re-run changes nothing" "$(wpx db query "SHOW CREATE TABLE wp_spilno_pages; SHOW CREATE TABLE wp_spilno_log; SHOW CREATE TABLE wp_spilno_nonces" --skip-column-names | md5sum)" "$before"
 chk "migration: busy under a held lock" "$(wpx eval 'global $wpdb; delete_option("spilno_db_version"); $c = new wpdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST); $c->get_var("SELECT GET_LOCK(\"spilno_migrate_" . md5(DB_NAME . "|" . $wpdb->prefix) . "\", 0)"); echo _spilno_db_maybe_migrate(); $c->close();')" "busy"
-chk "migration: done after the lock is gone" "$(wpx eval 'echo get_option("spilno_db_version");')" "1.0.0"
+chk "migration: done after the lock is gone" "$(wpx eval 'echo get_option("spilno_db_version");')" "1.1.0"
 
 # PHP checks of the harness.
 out=$(wpx spilno-test run); echo "$out" | grep -E '^(FAIL|spilno-test)'
@@ -90,6 +91,10 @@ echo "$vis" | grep -q '^visual: .* passed' && ! echo "$vis" | grep -q '^FAIL' &&
 # PHP notices / warnings / fatals during the run.
 new=$(tail -n +"$((log_from+1))" "$log" | grep -E 'PHP (Fatal|Warning|Notice|Deprecated)|Uncaught' | grep -v 'spilno_save() must not be called inside an open transaction' || true)
 [ -z "$new" ] && ok || bad "debug.log: $new"
+
+# Stage 4a: endpoint, protection and ping on both stands.
+syn=$("$REPO/tests/sync.sh" 2>&1); echo "$syn" | grep -E '^(FAIL|sync.sh|early)'
+echo "$syn" | grep -q '^sync.sh: .* passed' && ! echo "$syn" | grep -q '^FAIL' && ok || bad "sync.sh"
 
 echo "run.sh: $pass/$((pass+fail)) passed"
 [ $fail = 0 ]
